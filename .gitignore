@@ -1,0 +1,10 @@
+node_modules/
+.npm
+
+# dotenv environment variables file
+.env
+.env.test
+.env.production
+
+# secrets
+.secrets/
