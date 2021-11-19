@@ -14,11 +14,7 @@ const customized_headers = {}
 const config = {
     method: 'get',
     url: uri,
-    headers: customized_headers,
-    proxy: {
-        host: '127.0.0.1',
-        port: 8866
-    }
+    headers: customized_headers
 }
 
 async function run(test_name, data) {

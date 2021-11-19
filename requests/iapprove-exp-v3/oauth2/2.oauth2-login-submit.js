@@ -29,11 +29,7 @@ const config = {
     method: 'POST',
     url: uri,
     headers: customized_headers,
-    data: form_params,
-    proxy: {
-        host: '127.0.0.1',
-        port: 8866
-    }
+    data: form_params
 }
 
 async function run(test_name, data) {
