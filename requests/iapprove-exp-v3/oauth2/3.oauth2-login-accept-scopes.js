@@ -16,7 +16,6 @@ const config = {
 }
 
 async function run(test_name, data) {
-    var result
     try {
         const result = await axios.makeRequest(config)
         axios.logResult(result, test_name) 
@@ -24,7 +23,7 @@ async function run(test_name, data) {
     } catch (error) {
         console.log(error)
     }
-    return result
+    return data
 }
 
 module.exports = { run }
