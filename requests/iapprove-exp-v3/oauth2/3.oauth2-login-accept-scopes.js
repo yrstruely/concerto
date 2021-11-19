@@ -19,14 +19,12 @@ async function run(test_name, data) {
     var result
     try {
         const result = await axios.makeRequest(config)
-        axios.logResult(result, test_name)
-        var regex = new RegExp(`name="sap-login-XSRF" value="(.*)"`)
-        sap_login_xsrf = result.data.match(regex)[1]   
+        axios.logResult(result, test_name) 
         console.log('data contains: ' + data)
     } catch (error) {
         console.log(error)
     }
-    return sap_login_xsrf
+    return result
 }
 
 module.exports = { run }
