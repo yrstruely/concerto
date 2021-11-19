@@ -12,21 +12,23 @@ const customized_headers = {}
 const config = {
     method: 'get',
     url: uri,
-    headers: customized_headers
+    headers: customized_headers,
+    proxy: {
+        host: '127.0.0.1',
+        port: 8866
+    }
 }
 
 async function run(test_name, data) {
     var result
     try {
         const result = await axios.makeRequest(config)
-        axios.logResult(result, test_name)
-        var regex = new RegExp(`name="sap-login-XSRF" value="(.*)"`)
-        sap_login_xsrf = result.data.match(regex)[1]   
+        axios.logResult(result, test_name) 
         console.log('data contains: ' + data)
     } catch (error) {
         console.log(error)
     }
-    return sap_login_xsrf
+    return result
 }
 
 module.exports = { run }
