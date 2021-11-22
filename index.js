@@ -2,7 +2,7 @@
 require('dotenv').config({ path: 'develop.env' })
 
 var tests = []
-var currentTest
+var result
 var glob = require('glob')
     , path = require('path')
 
@@ -10,12 +10,10 @@ glob.sync('./requests/iapprove-exp-v3/oauth2/**/*.js').forEach(function (file) {
 
     const { run } = require(path.resolve(file))
 
-    //currentTest = run
     tests.push({ instance: run, name: path.basename(file)})
 })
 
 async function runTest(test) {
-    var result
     try {
         result = await test.instance(test.name, result)
         console.log('result is: ' + result)
