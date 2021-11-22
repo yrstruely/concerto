@@ -10,7 +10,6 @@ glob.sync('./requests/iapprove-exp-v3/oauth2/**/*.js').forEach(function (file) {
 
     const { run } = require(path.resolve(file))
 
-    //currentTest = run
     tests.push({ instance: run, name: path.basename(file)})
 })
 
