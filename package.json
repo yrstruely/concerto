@@ -4,7 +4,8 @@
   "description": "Server-side functional and performance test framework",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "node index.js",
+    "debug": "nodemon --inspect=0.0.0.0:9229 index.js"
   },
   "author": "Kerry Harris",
   "license": "ISC",
@@ -13,6 +14,7 @@
     "dotenv": "^10.0.0",
     "fs.promises": "^0.1.2",
     "glob": "^7.2.0",
+    "nodemon": "^2.0.15",
     "socks-proxy-agent": "^6.1.0",
     "tunnel": "0.0.6"
   },
