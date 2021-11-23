@@ -1,0 +1,21 @@
+version: '3.8'
+
+services:
+ concerto:
+  build:
+   context: .
+  ports:
+   - 80:80
+   - 443:443
+   - 8888:8888
+   - 9229:9229
+  environment:
+   http_proxy: "http://host.docker.internal:8888/"
+   https_proxy: "http://host.docker.internal:8888/"
+  volumes:
+   - ./:/app
+   - test_data:/results
+  command: npm run test
+
+volumes:
+ test_data:
