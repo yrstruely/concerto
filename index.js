@@ -6,7 +6,7 @@ var result
 var glob = require('glob')
     , path = require('path')
 
-glob.sync('./requests/iapprove-exp-v3/oauth2/**/*.js').forEach(function (file) {
+glob.sync(process.env.TESTS_PATH).forEach(function (file) {
 
     const { run } = require(path.resolve(file))
 

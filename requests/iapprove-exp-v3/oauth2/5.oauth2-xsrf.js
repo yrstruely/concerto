@@ -1,6 +1,7 @@
 const axios = require("../../../axios-client.js")
 const url = require('url')
 const https = require('https')
+const expect = require('chai').expect
 
 
 async function run(test_name, data) {
@@ -41,7 +42,7 @@ async function run(test_name, data) {
 
         const result = await axios.makeRequest(config, data)
         data = axios.getSetCookie(result, data)
-        axios.logResult(result, test_name)
+        axios.logResult(result, test_name, data, test)
 
         const x_csrf_token = null
         for (const header in result.headers) {
@@ -59,5 +60,9 @@ async function run(test_name, data) {
         console.log(error)
     }
     return data
+}
+
+function test(result, data) {
+    expect(result.status).to.equal(200)
 }
 module.exports = { run }

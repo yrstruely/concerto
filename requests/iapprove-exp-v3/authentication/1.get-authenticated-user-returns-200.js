@@ -1,5 +1,6 @@
 const axios = require("../../../axios-client.js")
 const url = require('url')
+const expect = require('chai').expect
 
 const baseUrl = process.env.BASE_URL
 const path = process.env.URL_PATH + '/purchase-requisitions/tasks'
@@ -25,7 +26,11 @@ const config = {
 
 async function run(test_name, data) {
     const result = await axios.makeRequest(config)
-    axios.logResult(result, test_name)
+    axios.logResult(result, test_name, data, test)
+}
+
+function test(result, data) {
+    expect(result.status).to.equal(200)
 }
 
 module.exports = { run }
