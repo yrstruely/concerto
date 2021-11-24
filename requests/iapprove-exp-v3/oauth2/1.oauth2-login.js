@@ -2,6 +2,7 @@ const PROJECT_DIR = '../../../'
 const axios = require(PROJECT_DIR + "axios-client.js")
 const url = require('url')
 const https = require('https')
+const expect = require('chai').expect
 
 
 async function run(test_name, data) {
@@ -33,7 +34,7 @@ async function run(test_name, data) {
 
         data = { sap_login_xsrf: '', cookie: '', set_cookies: [] }
         result = await axios.makeRequest(config, data)
-        axios.logResult(result, test_name)
+        axios.logResult(result, test_name, data, test)
 
         var regex = new RegExp(`name="sap-login-XSRF" value="(.*)"`)
         sap_login_xsrf = result.data.match(regex)[1]
@@ -54,6 +55,9 @@ async function run(test_name, data) {
         console.log(error)
     }
     return data
+}
+function test(result, data) {
+    expect(result.status).to.equal(200)
 }
 
 module.exports = { run }
