@@ -11,11 +11,11 @@ services:
    # Uncomment the below 5 lines to run tests through the
    # Fiddler proxy
    #
-   - 8888:8888
-   - 9229:9229
-  environment:
-   http_proxy: "http://host.docker.internal:8888/"
-   https_proxy: "http://host.docker.internal:8888/"
+   #- 8888:8888
+   #- 9229:9229
+  #environment:
+   #http_proxy: "http://host.docker.internal:8888/"
+   #https_proxy: "http://host.docker.internal:8888/"
   volumes:
    - ./:/app
    - test_data:/results
@@ -25,9 +25,10 @@ services:
    # x509: certificate signed by unknown authority
    # However, running the Axios functional tests is fine
    #
-  #command: /bin/sh -c "npm run test ; npm run perf-test"
+  command: /bin/sh -c "npm run test ; npm run perf-test"
   #command: npm run test
-  command: npm run perf-test
+  #command: npm run perf-test
+  #command: npm run debug
 
 volumes:
  test_data:
