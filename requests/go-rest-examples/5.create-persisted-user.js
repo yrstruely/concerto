@@ -1,5 +1,6 @@
 const PROJECT_DIR = '../../'
 const axios = require(PROJECT_DIR + 'axios-client.js')
+const fileIO = require(PROJECT_DIR + 'persistent.js')
 const expect = require('chai').expect
 const faker = require('faker')
 
@@ -29,9 +30,13 @@ async function run(test_name, data) {
             data: body
         }
 
+        let data = fileIO.deserialize()
+        console.log(data)
+        console.log(data.id)
         data = {}
         result = await axios.makeRequest(config, data)
         data = result.data.data
+        fileIO.serialize(data)
         axios.logResult(result, test_name, data, test)
         console.log('data contains: ' + data)
 

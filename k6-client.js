@@ -2,6 +2,9 @@ import http from 'k6/http';
 import { sleep, check } from 'k6';
 import { Counter } from 'k6/metrics';
 
+const data = JSON.parse(open("/results/data.json"));
+console.log(data)
+
 // A simple counter for http requests
 
 export const requests = new Counter('http_reqs');
@@ -11,9 +14,9 @@ export const requests = new Counter('http_reqs');
 
 export const options = {
   stages: [
-    { target: 20, duration: '5s' },
-    { target: 15, duration: '5s' },
-    { target: 0, duration: '5s' },
+    { target: 5, duration: '10s' }
+    //{ target: 15, duration: '5s' },
+    //{ target: 0, duration: '5s' },
   ],
   thresholds: {
     requests: ['count < 100'],
@@ -23,13 +26,12 @@ export const options = {
 export default function () {
   // our HTTP request, note that we are saving the response to res, which can be accessed later
 
-  //const res = http.get('https://test.k6.io');
-  const res = http.get('https://gorest.co.in/public/v1/users/404')
+  const res = http.get(`https://gorest.co.in/public/v1/users/${data.id}`)
 
   sleep(1);
 
   const checkRes = check(res, {
-    'status is 404': (r) => r.status === 404,
-    'response body': (r) => r.body.indexOf('Resource not found') !== -1,
+    'status is 200': (r) => r.status === 200,
+    'response body': (r) => r.body.indexOf(`${data.id}`) !== -1,
   });
 }
