@@ -7,6 +7,10 @@ services:
   ports:
    - 80:80
    - 443:443
+   #
+   # Uncomment the below 5 lines to run tests through the
+   # Fiddler proxy
+   #
    - 8888:8888
    - 9229:9229
   environment:
@@ -15,7 +19,15 @@ services:
   volumes:
    - ./:/app
    - test_data:/results
-  command: npm run test
+   #
+   # Attempting to run the performance tests through Fiddler
+   # results in invalid certificate error:
+   # x509: certificate signed by unknown authority
+   # However, running the Axios functional tests is fine
+   #
+  #command: /bin/sh -c "npm run test ; npm run perf-test"
+  #command: npm run test
+  command: npm run perf-test
 
 volumes:
  test_data:
