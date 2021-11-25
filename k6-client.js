@@ -3,9 +3,9 @@ import { sleep, check } from 'k6';
 import { Counter } from 'k6/metrics';
 import dotenv from "k6/x/dotenv";
 
-const env = dotenv.parse(open(".env.development.local"));
+const env = dotenv.parse(open(".env.develop.local"));
 
-const data = JSON.parse(open("/results/data.json"));
+const data = JSON.parse(open("./results/data.json"));
 console.log(data)
 
 // A simple counter for http requests

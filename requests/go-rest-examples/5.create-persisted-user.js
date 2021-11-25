@@ -30,7 +30,6 @@ async function run(test_name, data) {
             data: body
         }
 
-        let data = fileIO.deserialize()
         console.log(data)
         console.log(data.id)
         data = {}
