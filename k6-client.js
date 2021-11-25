@@ -1,6 +1,9 @@
 import http from 'k6/http';
 import { sleep, check } from 'k6';
 import { Counter } from 'k6/metrics';
+import dotenv from "k6/x/dotenv";
+
+const env = dotenv.parse(open(".env.development.local"));
 
 const data = JSON.parse(open("/results/data.json"));
 console.log(data)
@@ -26,7 +29,9 @@ export const options = {
 export default function () {
   // our HTTP request, note that we are saving the response to res, which can be accessed later
 
-  const res = http.get(`https://gorest.co.in/public/v1/users/${data.id}`)
+  const uri = `${env.BASE_URL}${env.URL_PATH}`
+  console.log(uri)
+  const res = http.get(`${uri}/users/${data.id}`)
 
   sleep(1);
 
