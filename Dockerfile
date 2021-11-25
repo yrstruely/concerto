@@ -1,15 +1,23 @@
-# syntax=docker/dockerfile:1
+FROM golang:1.17-alpine as builder
+WORKDIR $GOPATH/src/go.k6.io/k6
+ADD . .
+RUN apk --no-cache add git
+RUN go mod init
+RUN go install go.k6.io/xk6/cmd/xk6@latest
+RUN xk6 build --with github.com/szkiba/xk6-dotenv@latest
+RUN cp k6 $GOPATH/bin/k6
+
+FROM alpine:3.13 as xk6
+RUN apk add --no-cache ca-certificates && \
+    adduser -D -u 12345 -g 12345 k6
+COPY --from=builder /go/bin/k6 /usr/bin/k6
+USER root
+ENTRYPOINT ["k6"]
+
 
 FROM node:16.13.0
-ENV NODE_ENV=development
-
-WORKDIR /app
-RUN apt-get update
-RUN apt-get install dirmngr --install-recommends
-RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys C5AD17C747E3415A3642D57D77C6C491D6AC1D69
-RUN echo "deb https://dl.k6.io/deb stable main" | tee /etc/apt/sources.list.d/k6.list
-RUN apt-get update
-RUN apt-get install k6
+WORKDIR /concerto
+COPY --from=builder /go/bin/k6 /usr/bin/k6
 COPY ["package.json", "package-lock.json*", "./"]
 RUN npm install -development
 COPY . .
