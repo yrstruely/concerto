@@ -1,6 +1,8 @@
 # Concerto
 
-Server-side functional and performance network testing tool utilizing the Axios and R6 libraries.
+API/Network functional and performance testing living together in perfect hamony
+
+Mainly utilizing the Axios and R6 libraries
 
 # Setup
 

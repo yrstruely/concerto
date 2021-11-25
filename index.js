@@ -1,5 +1,5 @@
 
-require('dotenv').config({ path: 'develop.env' })
+require('dotenv').config({ path: '.env.develop.local' })
 
 var tests = []
 var result
