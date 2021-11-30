@@ -43,12 +43,19 @@ async function run(test_name, data) {
 }
 
 function test(result, data) {
-    expect(result.status).to.equal(201)
-    expect(data).to.have.property('id')
-    expect(data).to.have.property('name')
-    expect(data).to.have.property('email')
-    expect(data).to.have.property('gender')
-    expect(data).to.have.property('status')
+    //describe(`${method.toUpperCase()} ${uri}`, function() {
+    describe('POST https://gorest.co.in/public/v1/users', function() {
+        const expectedHttpStatus = 201
+        describe(`HTTP Response Status should be ${expectedHttpStatus}`, function() {
+            expect(result.status, `FAILED!: HTTP Status should be ${expectedHttpStatus}`).to.equal(expectedHttpStatus)
+        })
+    })
+    //expect(result.status, 'FAILED!: HTTP Status should be 201').to.equal(201)
+    expect(data, 'FAILED!: Response body should have property: id').to.have.property('id')
+    expect(data, 'FAILED!: Response body should have property: name').to.have.property('name')
+    expect(data, 'FAILED!: Response body should have property: email').to.have.property('email')
+    expect(data, 'FAILED!: Response body should have property: gender').to.have.property('gender')
+    expect(data, 'FAILED!: Response body should have property: status').to.have.property('status')
 }
 
 module.exports = { run }

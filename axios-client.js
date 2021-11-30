@@ -43,25 +43,8 @@ function getSetCookie(result, data) {
     return data
 }
 
-function checkAssertions(result, data, assertions) {
-    console.log('----------------ASSERTIONS----------------')
-
-    try {
-        if (typeof assertions != 'undefined') {
-            assertions(result, data)
-        }
-        console.log('PASSED')
-
-    } catch (error) {
-        console.log(`FAILED! ${error}`)
-    }
-}
-
-function logResult(result, test_name, data, assertions) {
-    console.log('')
-    console.log('----------------RUNNING-TEST----------------')
-    console.log('')
-    console.log(test_name)
+function logResult(result) {
+    const data = result.data.data
     console.log('')
     if (result.isAxiosError === true) {
         console.log('----------------REQUEST----------------')
@@ -76,7 +59,6 @@ function logResult(result, test_name, data, assertions) {
             console.log(result.response.data)
         }
         console.log(`${result.response.status} ${result.response.statusText}`)
-        checkAssertions(result, data, assertions)
         console.log('----------------END----------------')
     }
     else {
@@ -92,7 +74,6 @@ function logResult(result, test_name, data, assertions) {
             console.log(result.data)
         }
         console.log(`${result.status} ${result.statusText}`)
-        checkAssertions(result, data, assertions)
         console.log('----------------END----------------')
     }
 }
