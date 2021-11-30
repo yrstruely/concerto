@@ -4,7 +4,7 @@
   "description": "Server-side functional and performance test framework",
   "main": "index.js",
   "scripts": {
-    "test": "mocha --sort=true",
+    "test": "mocha --sort=true --reporter mochawesome --require mochawesome/register",
     "perf-test": "k6 run ./k6-client.js",
     "debug": "nodemon --inspect=0.0.0.0:9229 index.js"
   },
@@ -20,6 +20,7 @@
     "glob": "^7.2.0",
     "k6": "0.0.0",
     "mocha": "^9.1.3",
+    "mochawesome": "^7.0.1",
     "nodemon": "^2.0.15",
     "socks-proxy-agent": "^6.1.0",
     "tunnel": "0.0.6"

@@ -11,6 +11,10 @@
                 "--timeout",
                 "999999",
                 "--sort=true",
+                "--reporter",
+                "mochawesome",
+                "--require",
+                "mochawesome/register",
                 "--colors",
                 "${workspaceFolder}/test"
             ],
