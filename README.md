@@ -20,8 +20,8 @@ The tests are written in Node.js with the functional tests using the Axios libra
 
 All tests should be placed in the ./test folder and if you require them to run in a particular order then name them as:
 
- - 1.test1.js
- - 2.test2.js
+ - 1.test1.spec.js
+ - 2.test2.spec.js
  - etc.
 
 you can have any sub-folders you like under ./test so that you can organise your tests into logical groupingsm
@@ -32,6 +32,7 @@ There are various methods available for running your tests:
 
  - Docker
  - Node/npm
+ - Debugging in VS Code
  - Functional and Performance tests together
  - Functional and Performance tests separtely
  - Functional tests via the Fiddler proxy

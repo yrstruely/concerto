@@ -15,7 +15,7 @@ async function sendRequest(config, state) {
     return result
 }
 
-describe('Create User', async function () {
+describe('Create Persistent User', async function () {
     const expectedHttpStatus = 201
     it(`HTTP Response Status should be ${expectedHttpStatus}`, async function () {
         const baseUrl = process.env.BASE_URL
