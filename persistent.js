@@ -1,15 +1,18 @@
 const fs = require('fs');
 
 function serialize(data) {
-    const serialized_data = JSON.stringify(data);
-
-    fs.writeFile('./results/data.json', serialized_data, (error) => {
-        if (error) {
-            throw error;
+    try {
+        const serialized_data = JSON.stringify(data);
+        if (typeof(serialized_data) == undefined) {
+            throw "Error: attempting to serialize undefined data!"
         }
+        fs.writeFileSync('./results/data.json', serialized_data);
         console.log('Wrote data to file');
-    });
+    } catch (error) {
+        console.log(error);
+    }
 }
+
 function deserialize() {
     try {
         const serialized_data = fs.readFileSync('./results/data.json');
