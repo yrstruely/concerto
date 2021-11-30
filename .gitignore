@@ -1,3 +1,4 @@
+#node js
 node_modules/
 .npm
 
@@ -7,3 +8,6 @@ temp/
 
 # secrets
 .secrets/
+
+#mochawesome
+mochawesome-report/
