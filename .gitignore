@@ -11,3 +11,6 @@ temp/
 
 #mochawesome
 mochawesome-report/
+
+#persistent.js
+results/data.json

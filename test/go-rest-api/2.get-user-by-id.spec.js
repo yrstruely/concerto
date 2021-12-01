@@ -1,5 +1,5 @@
 require('dotenv').config({ path: '.env.develop.local' })
-const PROJECT_DIR = '../'
+const PROJECT_DIR = '../../'
 const axiosClient = require(PROJECT_DIR + 'axios-client.js')
 const fileIO = require(PROJECT_DIR + 'persistent.js')
 const expect = require('chai').expect
@@ -8,37 +8,31 @@ const faker = require('faker')
 
 async function sendRequest(config, state) {
     const result = await axiosClient.makeRequest(config, state)
-    data = result.data.data
+    if (result.isAxiosError != true) {
+        data = result.data.data   
+    }
     axiosClient.logResult(result)
 
     return result
 }
 
-describe('Update User by Id', async function () {
+describe('Get User by Id', async function () {
     const expectedHttpStatus = 200
     it(`HTTP Response Status should be ${expectedHttpStatus}`, async function () {
         const state = fileIO.deserialize()
-        const baseUrl = process.env.BASE_URL
-        const path = process.env.URL_PATH
+        const baseUrl = process.env.GO_REST_BASE_URL
+        const path = process.env.GO_REST_URL_PATH
         const uri = `${baseUrl}${path}/users/${state.id}`
 
         const customized_headers = {
-            'Authorization': `Bearer ${process.env.ACCESS_TOKEN}`,
+            'Authorization': `Bearer ${process.env.GO_REST_ACCESS_TOKEN}`,
             'Content-Type': 'application/json'
         }
 
-        const body = {
-            'name': `${faker.name.findName()}`, 
-            'gender': 'male', 
-            'email': `${faker.internet.email()}`, 
-            'status': 'active'
-        }
-
         const config = {
-            method: 'put',
+            method: 'get',
             url: uri,
-            headers: customized_headers,
-            data: body
+            headers: customized_headers
         }
         result = await sendRequest(config, state)
         expect(result.status).equals(expectedHttpStatus)
