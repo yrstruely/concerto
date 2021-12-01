@@ -16,7 +16,7 @@
                 "--require",
                 "mochawesome/register",
                 "--colors",
-                "${workspaceFolder}/test"
+                "${workspaceFolder}/test/**/*"
             ],
             "internalConsoleOptions": "openOnSessionStart",
             "name": "Mocha Tests",

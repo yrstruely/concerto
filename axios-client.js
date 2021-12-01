@@ -44,7 +44,6 @@ function getSetCookie(result, data) {
 }
 
 function logResult(result) {
-    const data = result.data.data
     console.log('')
     if (result.isAxiosError === true) {
         console.log('----------------REQUEST----------------')

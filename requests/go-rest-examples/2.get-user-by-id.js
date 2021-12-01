@@ -6,12 +6,12 @@ const faker = require('faker')
 
 async function run(test_name, data) {
     try {
-        const baseUrl = process.env.BASE_URL
-        const path = process.env.URL_PATH
+        const baseUrl = process.env.GO_REST_BASE_URL
+        const path = process.env.GO_REST_URL_PATH
         const uri = `${baseUrl}${path}/users/${data.id}`
 
         const customized_headers = {
-            'Authorization': `Bearer ${process.env.ACCESS_TOKEN}`,
+            'Authorization': `path = process.env.GO_REST_ACCESS_TOKEN`,
             'Content-Type': 'application/json'
         }
 
