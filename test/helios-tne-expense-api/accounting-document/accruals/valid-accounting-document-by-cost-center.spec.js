@@ -21,70 +21,71 @@ async function sendRequest(config, state) {
 
     return result
 }
+describe('Helios Time and Expense Management Experience API', function () {
+    describe('POST /accounting-document valid', async function () {
+        let fixture = {}
 
-describe('POST /accounting-document valid', async function () {
-    let fixture = {}
-
-    beforeEach(function () {
-        let postingDate = new Date()
-        postingDate = Date.UTC(postingDate.getUTCFullYear(), postingDate.getUTCMonth(), postingDate.getUTCDate())
-        postingDate = formatDate(postingDate)
-        postingDate.toString().split('GMT')[0] + ' UTC'
+        beforeEach(function () {
+            let postingDate = new Date()
+            postingDate = Date.UTC(postingDate.getUTCFullYear(), postingDate.getUTCMonth(), postingDate.getUTCDate())
+            postingDate = formatDate(postingDate)
+            postingDate.toString().split('GMT')[0] + ' UTC'
 
 
 
-        return fixture = {
-            companyCode: 1456,
-            postingDate: postingDate
-        }
-    })
-    const expectedHttpStatus = 201
-    it(`HTTP Response Status should be ${expectedHttpStatus}`, async function () {
-        const baseUrl = process.env.HELIOS_TNE_EXP_BASE_URL
-        const path = process.env.HELIOS_TNE_EXP_URL_PATH
-        const uri = `${baseUrl}${path}/accounting-document`
+            return fixture = {
+                companyCode: 1456,
+                postingDate: postingDate
+            }
+        })
+        const expectedHttpStatus = 201
+        it(`HTTP Response Status should be ${expectedHttpStatus}`, async function () {
+            const baseUrl = process.env.HELIOS_TNE_EXP_BASE_URL
+            const path = process.env.HELIOS_TNE_EXP_URL_PATH
+            const uri = `${baseUrl}${path}/accounting-document`
 
-        const customized_headers = {
-            'client_id': process.env.HELIOS_TNE_EXP_CLIENT_ID,
-            'client_secret': process.env.HELIOS_TNE_EXP_CLIENT_SECRET,
-            'X-Correlation-ID': uuidv4(),
-            'Content-Type': 'application/json'
-        }
+            const customized_headers = {
+                'client_id': process.env.HELIOS_TNE_EXP_CLIENT_ID,
+                'client_secret': process.env.HELIOS_TNE_EXP_CLIENT_SECRET,
+                'X-Correlation-ID': uuidv4(),
+                'Content-Type': 'application/json'
+            }
 
-        dataBody = {
-            "companyCode": `${fixture.companyCode}`,
-            "type": process.env.HELIOS_TNE_EXP_EXPENSE_CLAIM_TYPE,
-            "documentDate": "2021-03-21",
-            "documentReference": accountingDocumentReferences('Accrual').documentReference,
-            "reversalPostingDate": `${fixture.postingDate}`,
-            "reversalReason": "01",
-            "items": [
-                {
-                    "costCenter": process.env.HELIOS_TNE_EXP_COST_CENTER,
-                    "glAccount": process.env.HELIOS_TNE_EXP_GL_ACCOUNT,
-                    "transactionAmount": 200,
-                    "transactionCurrencyCode": "CNY",
-                    "taxCode": "V0",
-                    "vendorTransactionText": "abcdefghijklmnopqrstuvwxy"
-                },
-                {
-                    "costCenter": process.env.HELIOS_TNE_EXP_COST_CENTER,
-                    "glAccount": process.env.HELIOS_TNE_EXP_GL_ACCOUNT,
-                    "transactionAmount": 300,
-                    "transactionCurrencyCode": "CNY",
-                    "taxCode": "V0",
-                    "vendorTransactionText": "abcdefghijklmnopqrstuvwxy"
-                }
-            ]
-        }
+            dataBody = {
+                "companyCode": `${fixture.companyCode}`,
+                "type": process.env.HELIOS_TNE_EXP_EXPENSE_CLAIM_TYPE,
+                "documentDate": "2021-03-21",
+                "documentReference": accountingDocumentReferences('Accrual').documentReference,
+                "reversalPostingDate": `${fixture.postingDate}`,
+                "reversalReason": "01",
+                "items": [
+                    {
+                        "costCenter": process.env.HELIOS_TNE_EXP_COST_CENTER,
+                        "glAccount": process.env.HELIOS_TNE_EXP_GL_ACCOUNT,
+                        "transactionAmount": 200,
+                        "transactionCurrencyCode": "CNY",
+                        "taxCode": "V0",
+                        "vendorTransactionText": "abcdefghijklmnopqrstuvwxy"
+                    },
+                    {
+                        "costCenter": process.env.HELIOS_TNE_EXP_COST_CENTER,
+                        "glAccount": process.env.HELIOS_TNE_EXP_GL_ACCOUNT,
+                        "transactionAmount": 300,
+                        "transactionCurrencyCode": "CNY",
+                        "taxCode": "V0",
+                        "vendorTransactionText": "abcdefghijklmnopqrstuvwxy"
+                    }
+                ]
+            }
 
-        const config = {
-            method: 'post',
-            url: uri,
-            headers: customized_headers,
-            data: dataBody
-        }
-        result = await sendRequest(config, {})
-        expect(result.status).equals(expectedHttpStatus)
+            const config = {
+                method: 'post',
+                url: uri,
+                headers: customized_headers,
+                data: dataBody
+            }
+            result = await sendRequest(config, {})
+            expect(result.status).equals(expectedHttpStatus)
+        })
     })
 })
