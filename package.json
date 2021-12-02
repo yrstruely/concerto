@@ -4,7 +4,7 @@
   "description": "Server-side functional and performance test framework",
   "main": "index.js",
   "scripts": {
-    "test": "mocha --sort=true --reporter mochawesome --require mochawesome/register",
+    "test": "mocha --sort=true --recursive --reporter mochawesome --require mochawesome/register",
     "perf-test": "k6 run ./k6-client.js",
     "debug": "nodemon --inspect=0.0.0.0:9229 index.js"
   },

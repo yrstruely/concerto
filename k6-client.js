@@ -31,7 +31,7 @@ export const options = {
 export default function () {
   // our HTTP request, note that we are saving the response to res, which can be accessed later
 
-  const uri = `${env.BASE_URL}${env.URL_PATH}`
+  const uri = `${env.GO_REST_BASE_URL}${env.GO_REST_URL_PATH}`
   console.log(uri)
   const res = http.get(`${uri}/users/${data.id}`)
 
