@@ -21,4 +21,5 @@ COPY --from=builder /go/bin/k6 /usr/bin/k6
 COPY ["package.json", "package-lock.json*", "./"]
 RUN npm install -development
 COPY . .
+RUN k6
 CMD ["node", "index.js"]

@@ -1,21 +1,11 @@
 require('dotenv').config({ path: '.env.develop.local' })
 const PROJECT_DIR = '../../'
-const axiosClient = require(PROJECT_DIR + 'axios-client.js')
+const { GorestClient } = require(PROJECT_DIR + 'clients/gorest-client.js')
+const client = new GorestClient()
 const fileIO = require(PROJECT_DIR + 'persistent.js')
 const expect = require('chai').expect
 const faker = require('faker')
 
-
-async function sendRequest(config, state) {
-    const result = await axiosClient.makeRequest(config, state)
-    if (result.isAxiosError != true) {
-        data = result.data.data   
-    }
-    await fileIO.serialize(data)
-    axiosClient.logResult(result)
-
-    return result
-}
 
 describe('Create Persistent User', async function () {
     const expectedHttpStatus = 201
@@ -42,7 +32,8 @@ describe('Create Persistent User', async function () {
             headers: customized_headers,
             data: body
         }
-        result = await sendRequest(config, {})
+        result = await client.sendRequest(config, {})
+        data = result.data.data
         expect(result.status).equals(expectedHttpStatus)
     })
     it('Response body should have property: name', function () {

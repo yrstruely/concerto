@@ -1,24 +1,11 @@
 require('dotenv').config({ path: '.env.develop.local' })
 const PROJECT_DIR = '../../../'
-const axiosClient = require(PROJECT_DIR + 'axios-client.js')
-const fileIO = require(PROJECT_DIR + 'persistent.js')
+const { IapproveClient } = require(PROJECT_DIR + 'clients/iapprove-client.js')
+const client = new IapproveClient()
 const { formatDate } = require(PROJECT_DIR + './helpers/format-date.js')
 const expect = require('chai').expect
 const faker = require('faker')
 
-
-async function sendRequest(config, state) {
-    const result = await axiosClient.makeRequest(config, state)
-    if (result.isAxiosError != true) {
-        data = result.data
-    }
-    else {
-        data = result.response.data
-    }
-    axiosClient.logResult(result)
-
-    return result
-}
 
 describe('Helios Time and Expense Management Experience API', function () {
     describe('GET /ping with invalid client id', async function () {
@@ -51,7 +38,8 @@ describe('Helios Time and Expense Management Experience API', function () {
                 url: uri,
                 headers: customized_headers
             }
-            result = await sendRequest(config, {})
+            result = await client.sendRequest(config, {})
+            data = result.data
             expect(result.status).equals(expectedHttpStatus)
         })
         const property = 'status'
