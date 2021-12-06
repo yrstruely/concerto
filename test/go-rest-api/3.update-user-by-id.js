@@ -1,20 +1,11 @@
 require('dotenv').config({ path: '.env.develop.local' })
 const PROJECT_DIR = '../../'
-const axiosClient = require(PROJECT_DIR + 'axios-client.js')
+const { GorestClient } = require(PROJECT_DIR + 'clients/gorest-client.js')
+const client = new GorestClient()
 const fileIO = require(PROJECT_DIR + 'persistent.js')
 const expect = require('chai').expect
 const faker = require('faker')
 
-
-async function sendRequest(config, state) {
-    const result = await axiosClient.makeRequest(config, state)
-    if (result.isAxiosError != true) {
-        data = result.data.data   
-    }
-    axiosClient.logResult(result)
-
-    return result
-}
 
 describe('Update User by Id', async function () {
     const expectedHttpStatus = 200
@@ -42,7 +33,8 @@ describe('Update User by Id', async function () {
             headers: customized_headers,
             data: body
         }
-        result = await sendRequest(config, state)
+        result = await client.sendRequest(config, state)
+        data = result.data.data
         expect(result.status).equals(expectedHttpStatus)
     })
     it('Response body should have property: name', function () {

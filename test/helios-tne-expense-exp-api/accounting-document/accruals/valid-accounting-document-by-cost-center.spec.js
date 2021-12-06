@@ -1,7 +1,7 @@
 require('dotenv').config({ path: '.env.develop.local' })
 const PROJECT_DIR = '../../../../'
-const axiosClient = require(PROJECT_DIR + 'axios-client.js')
-const fileIO = require(PROJECT_DIR + 'persistent.js')
+const { IapproveClient } = require(PROJECT_DIR + 'clients/iapprove-client.js')
+const client = new IapproveClient()
 const { formatDate } = require(PROJECT_DIR + './helpers/format-date.js')
 const { accountingDocumentReferences } = require(PROJECT_DIR + './helpers/accounting-document-references.js')
 const expect = require('chai').expect
@@ -9,18 +9,6 @@ const faker = require('faker')
 const { v4: uuidv4 } = require('uuid')
 
 
-async function sendRequest(config, state) {
-    const result = await axiosClient.makeRequest(config, state)
-    if (result.isAxiosError != true) {
-        data = result.data
-    }
-    else {
-        data = result.response.data
-    }
-    axiosClient.logResult(result)
-
-    return result
-}
 describe('Helios Time and Expense Management Experience API', function () {
     describe('POST /accounting-document valid', async function () {
         let fixture = {}
@@ -84,7 +72,7 @@ describe('Helios Time and Expense Management Experience API', function () {
                 headers: customized_headers,
                 data: dataBody
             }
-            result = await sendRequest(config, {})
+            result = await client.sendRequest(config, {})
             expect(result.status).equals(expectedHttpStatus)
         })
     })

@@ -1,20 +1,11 @@
 require('dotenv').config({ path: '.env.develop.local' })
 const PROJECT_DIR = '../../'
-const axiosClient = require(PROJECT_DIR + 'axios-client.js')
+const { GorestClient } = require(PROJECT_DIR + 'clients/gorest-client.js')
+const client = new GorestClient()
 const fileIO = require(PROJECT_DIR + 'persistent.js')
 const expect = require('chai').expect
 const faker = require('faker')
 
-
-async function sendRequest(config, state) {
-    const result = await axiosClient.makeRequest(config, state)
-    if (result.isAxiosError != true) {
-        data = result.data.data   
-    }
-    axiosClient.logResult(result)
-
-    return result
-}
 
 describe('Delete User by Id', async function () {
     const expectedHttpStatus = 204
@@ -35,7 +26,7 @@ describe('Delete User by Id', async function () {
             headers: customized_headers
         }
 
-        result = await sendRequest(config, state)
+        result = await client.sendRequest(config, state)
         expect(result.status).equals(expectedHttpStatus)
     })
 })
