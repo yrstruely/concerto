@@ -21,5 +21,5 @@ COPY --from=builder /go/bin/k6 /usr/bin/k6
 COPY ["package.json", "package-lock.json*", "./"]
 RUN npm install -development
 COPY . .
-RUN k6 login cloud --token f86a43a6eeb1c877a2b49d1411a567cff4cd69a4f590c41e82d43bbc2d270f95
+RUN k6
 CMD ["node", "index.js"]
