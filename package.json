@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "mocha --sort=true --recursive --reporter mochawesome --require mochawesome/register",
-    "perf-test": "k6 run ./k6-client.js",
+    "perf-test": "K6_CLOUD_TOKEN=f86a43a6eeb1c877a2b49d1411a567cff4cd69a4f590c41e82d43bbc2d270f95 k6 run --out cloud ./k6-client.js",
     "debug": "nodemon --inspect=0.0.0.0:9229 index.js"
   },
   "author": "Kerry Harris",
