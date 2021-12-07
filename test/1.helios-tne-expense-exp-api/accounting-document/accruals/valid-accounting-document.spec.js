@@ -5,7 +5,7 @@ const client = new HeliosClient()
 const expect = require('chai').expect
 
 
-describe('Helios Time and Expense Management Experience API', function () {
+describe('Helios Time and Expense Management Experience API', async function () {
     describe('POST /accounting-document valid', async function () {
 
         const expectedHttpStatus = 201
@@ -15,5 +15,6 @@ describe('Helios Time and Expense Management Experience API', function () {
             result = await client.sendRequest(client.postAccrual())
             expect(result.status).equals(expectedHttpStatus)
         })
+        .timeout(5000)
     })
 })

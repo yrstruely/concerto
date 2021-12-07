@@ -5,9 +5,9 @@ import { html, jUnit, textSummary } from 'https://jslib.k6.io/k6-summary/0.0.1/i
 
 import dotenv from "k6/x/dotenv";
 
-const env = dotenv.parse(open(".env.develop.local"));
-
-const data = JSON.parse(open("./results/data.json"));
+const PROJECT_DIR = '../'
+const env = dotenv.parse(open(PROJECT_DIR + ".env.develop.local"));
+const data = JSON.parse(open(PROJECT_DIR + "results/data.json"));
 console.log(data)
 
 // A simple counter for http requests

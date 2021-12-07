@@ -2,11 +2,13 @@ require('dotenv').config({ path: '.env.develop.local' })
 const PROJECT_DIR = '../../../'
 const { HeliosClient } = require(PROJECT_DIR + 'clients/helios-client.js')
 const client = new HeliosClient()
+const { formatDate } = require(PROJECT_DIR + './helpers/format-date.js')
 const expect = require('chai').expect
+const faker = require('faker')
 
 
-describe('Helios Time and Expense Management Experience API', function () {
-    describe('GET /ping valid', async function () {
+describe('Helios Time and Expense Management Experience API', async function () {
+    describe('GET /ping with valid authentication', async function () {
 
         const expectedHttpStatus = 200
         it(`HTTP Response Status should be ${expectedHttpStatus}`, async function () {
