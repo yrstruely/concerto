@@ -18,7 +18,11 @@ class HeliosClient extends AxiosClient {
         'client_id': process.env.HELIOS_TNE_EXP_CLIENT_ID,
         'client_secret': process.env.HELIOS_TNE_EXP_CLIENT_SECRET,
         'X-Correlation-ID': uuidv4(),
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        'Cache-Control': 'no-cache',
+        'Host': 'dev.api.fonterra.com',
+        'Accept-Encoding': 'gzip, deflate, br',
+        'Connection': 'keep-alive'
     }
 
     getPostingDate() {
@@ -30,30 +34,36 @@ class HeliosClient extends AxiosClient {
         return postingDate
     }
 
-    getAccountingDocumentByCostCenter(documentType, method = 'GET', endpoint = '/accounting-document') {
+    postAccrual(method = 'POST', endpoint = '/accounting-document') {
         const uri = `${this.baseUrl}${this.path}${endpoint}`
         const dataBody = {
-            "companyCode": 1456,
+            "companyCode": '1456',
             "type": process.env.HELIOS_TNE_EXP_EXPENSE_CLAIM_TYPE,
             "documentDate": "2021-03-21",
-            "documentReference": accountingDocumentReferences(documentType).documentReference,
+            "documentReference": accountingDocumentReferences('Accrual').documentReference,
             "reversalPostingDate": `${this.getPostingDate()}`,
-            "reversalReason": "01",
+            "reversalReason": "05",
             "items": [
                 {
-                    "costCenter": process.env.HELIOS_TNE_EXP_COST_CENTER,
                     "glAccount": process.env.HELIOS_TNE_EXP_GL_ACCOUNT,
+                    "costCenter": process.env.HELIOS_TNE_EXP_COST_CENTER,
                     "transactionAmount": 200,
+                    "transactionGrossAmount": 200,
+                    "transactionTaxAmount": 0,
                     "transactionCurrencyCode": "CNY",
-                    "taxCode": "V0",
+                    "taxCode": "V5",
+                    "lineItemText": "81273019 12月个人报销",
                     "vendorTransactionText": "abcdefghijklmnopqrstuvwxy"
                 },
                 {
-                    "costCenter": process.env.HELIOS_TNE_EXP_COST_CENTER,
                     "glAccount": process.env.HELIOS_TNE_EXP_GL_ACCOUNT,
+                    "costCenter": process.env.HELIOS_TNE_EXP_COST_CENTER,
                     "transactionAmount": 300,
+                    "transactionGrossAmount": 300,
+                    "transactionTaxAmount": 0,
                     "transactionCurrencyCode": "CNY",
-                    "taxCode": "V0",
+                    "taxCode": "V6",
+                    "lineItemText": "81273019 12月个人报销",
                     "vendorTransactionText": "abcdefghijklmnopqrstuvwxy"
                 }
             ]
