@@ -8,7 +8,7 @@ const client = wrapper(axios.create({ jar }));
 class AxiosClient {
     result = null
 
-    async sendRequest(config, state) {
+    async sendRequest(config, state = {}) {
         if ((state.hasOwnProperty(['set_cookies']))
             && (config.hasOwnProperty('headers'))) {
             config.headers['cookie'] = state['set_cookies'].join('; ')

@@ -32,7 +32,7 @@ describe('Create Persistent User', async function () {
             headers: customized_headers,
             data: body
         }
-        result = await client.sendRequest(config, {})
+        result = await client.sendRequest(config)
         data = result.data.data
         expect(result.status).equals(expectedHttpStatus)
     })
