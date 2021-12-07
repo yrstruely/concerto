@@ -5,6 +5,21 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "internalConsoleOptions": "openOnSessionStart",
+            "name": "k6 tests",
+            "cwd": "${workspaceFolder}",
+            "request": "launch",
+            "runtimeArgs": [
+                "run-script",
+                "perf-test"
+            ],
+            "runtimeExecutable": "npm",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "type": "pwa-node"
+        },
+        {
             "args": [
                 "-u",
                 "bdd",

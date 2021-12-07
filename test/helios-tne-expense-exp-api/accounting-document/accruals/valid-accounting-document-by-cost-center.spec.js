@@ -1,7 +1,7 @@
 require('dotenv').config({ path: '.env.develop.local' })
 const PROJECT_DIR = '../../../../'
-const { IapproveClient } = require(PROJECT_DIR + 'clients/iapprove-client.js')
-const client = new IapproveClient()
+const { HeliosClient } = require(PROJECT_DIR + 'clients/helios-client.js')
+const client = new HeliosClient()
 const expect = require('chai').expect
 
 

@@ -9,7 +9,7 @@ const expect = require('chai').expect
 const faker = require('faker')
 const { v4: uuidv4 } = require('uuid')
 
-class IapproveClient extends AxiosClient {
+class HeliosClient extends AxiosClient {
     result = null
     baseUrl = process.env.HELIOS_TNE_EXP_BASE_URL
     path = process.env.HELIOS_TNE_EXP_URL_PATH
@@ -90,5 +90,5 @@ class IapproveClient extends AxiosClient {
     }
 }
 module.exports = {
-    IapproveClient
+    HeliosClient
 }
