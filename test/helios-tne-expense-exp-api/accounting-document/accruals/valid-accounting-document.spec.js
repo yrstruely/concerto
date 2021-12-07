@@ -12,7 +12,7 @@ describe('Helios Time and Expense Management Experience API', function () {
 
         it(`HTTP Response Status should be ${expectedHttpStatus}`, async function () {
 
-            result = await client.sendRequest(client.getAccountingDocumentByCostCenter('Accrual'))
+            result = await client.sendRequest(client.postAccrual())
             expect(result.status).equals(expectedHttpStatus)
         })
     })
