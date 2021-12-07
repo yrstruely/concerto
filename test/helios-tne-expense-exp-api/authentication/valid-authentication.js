@@ -8,37 +8,12 @@ const faker = require('faker')
 
 
 describe('Helios Time and Expense Management Experience API', function () {
-    describe('GET /ping with invalid client id', async function () {
-        let fixture = {}
+    describe('GET /ping with valid authentication', async function () {
 
-        beforeEach(function () {
-            let postingDate = new Date()
-            postingDate = Date.UTC(postingDate.getUTCFullYear(), postingDate.getUTCMonth(), postingDate.getUTCDate())
-            postingDate = formatDate(postingDate)
-            postingDate.toString().split('GMT')[0] + ' UTC'
-
-            return fixture = {
-                companyCode: 1456,
-                postingDate: postingDate
-            }
-        })
         const expectedHttpStatus = 200
         it(`HTTP Response Status should be ${expectedHttpStatus}`, async function () {
-            const baseUrl = process.env.HELIOS_TNE_EXP_BASE_URL
-            const path = process.env.HELIOS_TNE_EXP_URL_PATH
-            const uri = `${baseUrl}${path}/ping`
-
-            const customized_headers = {
-                'client_id': process.env.HELIOS_TNE_EXP_CLIENT_ID,
-                'client_secret': process.env.HELIOS_TNE_EXP_CLIENT_SECRET
-            }
-
-            const config = {
-                method: 'get',
-                url: uri,
-                headers: customized_headers
-            }
-            result = await client.sendRequest(config, {})
+            
+            result = await client.sendRequest(client.getPing())
             data = result.data
             expect(result.status).equals(expectedHttpStatus)
         })

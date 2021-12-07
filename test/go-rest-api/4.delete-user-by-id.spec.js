@@ -26,7 +26,7 @@ describe('Delete User by Id', async function () {
             headers: customized_headers
         }
 
-        result = await client.sendRequest(config, state)
+        result = await client.sendRequest(client.deleteUserById(state.id), state)
         expect(result.status).equals(expectedHttpStatus)
     })
 })
