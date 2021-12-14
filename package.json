@@ -4,8 +4,11 @@
   "description": "Server-side functional and performance test framework",
   "main": "index.js",
   "scripts": {
-    "test": "mocha --sort=true --recursive --reporter mochawesome --require mochawesome/register",
-    "perf-test": "k6 run ./k6-client.js",
+    "test": "mocha --sort=true --recursive --ignore=**/*.perf.js --reporter mochawesome --require mochawesome/register",
+    "perf-test": "k6 run ./clients/k6-client.js",
+    "helios-perf-test": "k6 run --http-debug=full ./test/1.helios-tne-expense-exp-api/performance/accounting-document.perf.js",
+    "helios-postman-perf-test": "k6 run --http-debug=full ./postman-scripts/helios-exp-api.js",
+    "iapprove-postman-perf-test": "k6 run --http-debug=full ./postman-scripts/iapprove-exp-api-v3.js",
     "debug": "nodemon --inspect=0.0.0.0:9229 index.js"
   },
   "author": "Kerry Harris",

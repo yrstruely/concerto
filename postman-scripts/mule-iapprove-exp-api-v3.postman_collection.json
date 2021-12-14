@@ -1,0 +1,2306 @@
+{
+	"info": {
+		"_postman_id": "ef137b32-b4d9-4279-b279-1dbdd410d225",
+		"name": "iApprove Experience API v3 - OAuth Only",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Integration Tests",
+			"item": [
+				{
+					"name": "Setup",
+					"item": [
+						{
+							"name": "Setup script",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"\r",
+											"var beginDate = new Date();\r",
+											"var endDate = new Date();\r",
+											"beginDate.setDate(new Date().getDate() + 1);\r",
+											"beginDate.setHours(0, 0, 0, 0);\r",
+											"endDate.setDate(new Date().getDate() + 10);\r",
+											"endDate.setHours(0, 0, 0, 0);\r",
+											"\r",
+											"pm.environment.set(\"beginDate\", beginDate.toISOString());\r",
+											"pm.environment.set(\"endDate\", endDate.toISOString());\r",
+											"\r",
+											"//2020-10-17T00:00:00Z\r",
+											"console.log(beginDate);\r",
+											"console.log(endDate);"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "https://devnull-as-a-service.com/dev/null",
+									"protocol": "https",
+									"host": [
+										"devnull-as-a-service",
+										"com"
+									],
+									"path": [
+										"dev",
+										"null"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"var startDate = new Date();",
+									"var endDate = new Date();",
+									"startDate.setDate(new Date().getDate() + 1);",
+									"startDate.setHours(0, 0, 0, 0);",
+									"endDate.setDate(new Date().getDate() + 10);",
+									"endDate.setHours(0, 0, 0, 0);",
+									"",
+									"pm.environment.set(\"startDate\", startDate.toISOString());",
+									"pm.environment.set(\"endDate\", endDate.toISOString());",
+									"",
+									"//2020-10-17T00:00:00Z",
+									"console.log(startDate);",
+									"console.log(endDate);",
+									"",
+									""
+								]
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						}
+					]
+				},
+				{
+					"name": "OAuth",
+					"item": [
+						{
+							"name": "OAuth Login",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"const jar = pm.cookies.jar();\r",
+											"const env = pm.environment.get(\"env\");\r",
+											"\r",
+											"jar.clear(`https://go-${env}.test.fonterra.com`);"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"var responseHtml = cheerio(pm.response.text());\r",
+											"\r",
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											"var sapLoginXSRF = responseHtml.find('[name=\"sap-login-XSRF\"]').val();\r",
+											"\r",
+											"if (sapLoginXSRF != null)\r",
+											"{\r",
+											"   pm.globals.set(\"sapLoginXSRF\", sapLoginXSRF);\r",
+											"    console.log(sapLoginXSRF);\r",
+											"\r",
+											"    var SAP_Instance = pm.environment.get('SAP_Instance');\r",
+											"\r",
+											"    pm.test(\"Response should return X-CSRF Tracking Token\", function () {\r",
+											"        var SAP_Login_XSRF = null;\r",
+											"        var regex = new RegExp(`^sap-login-XSRF_${SAP_Instance}=.*`);\r",
+											"        console.log(pm.response.headers);\r",
+											"        pm.response.headers.each(responseHeader => {  \r",
+											"            if (responseHeader.key.toLowerCase() === 'set-cookie' && \r",
+											"                responseHeader.value.match(regex)) {\r",
+											"                console.log(responseHeader.value);\r",
+											"                SAP_Login_XSRF = responseHeader.value;\r",
+											"            }\r",
+											"        }\r",
+											"    );\r",
+											"    pm.expect(SAP_Login_XSRF).not.null;\r",
+											"\r",
+											"    regex = new RegExp(`^(sap-login-XSRF_${SAP_Instance}=.*;) .ath.*`);\r",
+											"    SAP_Login_XSRF = SAP_Login_XSRF.match(regex)[1];\r",
+											"    pm.globals.set(\"Cookie\", SAP_Login_XSRF);\r",
+											"    });\r",
+											"}\r",
+											"else\r",
+											"{\r",
+											"    console.log(\"sapLoginXSRF is null\");    \r",
+											"}\r",
+											"\r",
+											"\r",
+											"\r",
+											"\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "https://go-{{env}}.test.fonterra.com/sap/bc/sec/oauth2/authorize?sap-client=100&response_type=code&client_id=MULEINT&redirect_uri=https%3A%2F%2Fanypoint.mulesoft.com%2Fexchange%2FoauthCallback.html&scope={{scope}}&state=anystate",
+									"protocol": "https",
+									"host": [
+										"go-{{env}}",
+										"test",
+										"fonterra",
+										"com"
+									],
+									"path": [
+										"sap",
+										"bc",
+										"sec",
+										"oauth2",
+										"authorize"
+									],
+									"query": [
+										{
+											"key": "sap-client",
+											"value": "100"
+										},
+										{
+											"key": "response_type",
+											"value": "code"
+										},
+										{
+											"key": "client_id",
+											"value": "MULEINT"
+										},
+										{
+											"key": "redirect_uri",
+											"value": "https%3A%2F%2Fanypoint.mulesoft.com%2Fexchange%2FoauthCallback.html"
+										},
+										{
+											"key": "scope",
+											"value": "{{scope}}"
+										},
+										{
+											"key": "state",
+											"value": "anystate"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "OAuth Submit Login",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Connection",
+										"value": "keep-alive"
+									},
+									{
+										"key": "Cache-Control",
+										"value": "max-age=0"
+									},
+									{
+										"key": "sec-ch-ua",
+										"value": "\"Google Chrome\";v=\"89\", \"Chromium\";v=\"89\", \";Not A Brand\";v=\"99\""
+									},
+									{
+										"key": "sec-ch-ua-mobile",
+										"value": "?0"
+									},
+									{
+										"key": "Upgrade-Insecure-Requests",
+										"value": "1"
+									},
+									{
+										"key": "Origin",
+										"value": "https://go-{{env}}.test.fonterra.com"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/x-www-form-urlencoded"
+									},
+									{
+										"key": "User-Agent",
+										"value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.82 Safari/537.36"
+									},
+									{
+										"key": "Accept",
+										"value": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9"
+									},
+									{
+										"key": "Sec-Fetch-Site",
+										"value": "same-origin"
+									},
+									{
+										"key": "Sec-Fetch-Mode",
+										"value": "navigate"
+									},
+									{
+										"key": "Sec-Fetch-User",
+										"value": "?1"
+									},
+									{
+										"key": "Sec-Fetch-Dest",
+										"value": "document"
+									},
+									{
+										"key": "Referer",
+										"value": "https://go-{{env}}.test.fonterra.com/sap/bc/sec/oauth2/authorize/index.html?response_type=code&client_id=MULEINT&redirect_uri=https%3a%2f%2fanypoint.mulesoft.com%2fexchange%2foauthCallback.html&scope={{scope}}&sap-language=EN"
+									},
+									{
+										"key": "Accept-Language",
+										"value": "en-US,en;q=0.9"
+									},
+									{
+										"key": "Cookie",
+										"value": "sap-login-XSRF_{{SAP_Instance}}={{sapLoginXSRF}}; sap-usercontext=sap-language=EN&sap-client=100; BIGipServerEP_FIORY_TEST_POOL=u0021IBLhO7+/Ppt5y3voxdJ9YJJeVN0dK+7PW8Lgo39N8Pz0uPK8PcI2tC+O1g10UH05iJScPiIkbus8DvA=; AzureAppProxyAnalyticCookie_268746a4-02c1-45df-8a54-80490a6ab26b_1.3=3|ZsH8fOARlZhzGtnmCX4XewMUqQZALaBmHb/ukvmA03vaYzG2dPR3DL/hwl6GDI1hyG92Q6anoxTsqol9hhmdssumvugt8P8LCH63tbqYtN0Uc/mZ26+/0DaRPd7B6P7s4M5xqwXQyNndbH3I1SLxhQ==",
+										"disabled": true
+									}
+								],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "sap-system-login-oninputprocessing",
+											"value": "onLogin",
+											"type": "text"
+										},
+										{
+											"key": "sap-urlscheme",
+											"value": "",
+											"type": "text"
+										},
+										{
+											"key": "sap-system-login",
+											"value": "onLogin",
+											"type": "text"
+										},
+										{
+											"key": "sap-system-login-basic_auth",
+											"value": "",
+											"type": "text"
+										},
+										{
+											"key": "sap-accessibility",
+											"value": "",
+											"type": "text"
+										},
+										{
+											"key": "sap-login-XSRF",
+											"value": "{{sapLoginXSRF}}",
+											"type": "text"
+										},
+										{
+											"key": "sap-system-login-cookie_disabled",
+											"value": "",
+											"type": "text"
+										},
+										{
+											"key": "sap-hash",
+											"value": "",
+											"type": "text"
+										},
+										{
+											"key": "sap-language",
+											"value": "EN",
+											"type": "text"
+										},
+										{
+											"key": "sap-user",
+											"value": "{{sap-user}}",
+											"type": "text"
+										},
+										{
+											"key": "sap-password",
+											"value": "{{sap-password}}",
+											"type": "text"
+										},
+										{
+											"key": "sap-client",
+											"value": "100",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "https://go-{{env}}.test.fonterra.com/sap/bc/sec/oauth2/authorize/index.html?response_type=code&client_id=MULEINT&redirect_uri=https%3a%2f%2fanypoint.mulesoft.com%2fexchange%2foauthCallback.html&scope={{scope}}&state=anystate",
+									"protocol": "https",
+									"host": [
+										"go-{{env}}",
+										"test",
+										"fonterra",
+										"com"
+									],
+									"path": [
+										"sap",
+										"bc",
+										"sec",
+										"oauth2",
+										"authorize",
+										"index.html"
+									],
+									"query": [
+										{
+											"key": "response_type",
+											"value": "code"
+										},
+										{
+											"key": "client_id",
+											"value": "MULEINT"
+										},
+										{
+											"key": "redirect_uri",
+											"value": "https%3a%2f%2fanypoint.mulesoft.com%2fexchange%2foauthCallback.html"
+										},
+										{
+											"key": "scope",
+											"value": "{{scope}}"
+										},
+										{
+											"key": "state",
+											"value": "anystate"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "OAuth Accept Scopes",
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Connection",
+										"value": "keep-alive"
+									},
+									{
+										"key": "Cache-Control",
+										"value": "max-age=0"
+									},
+									{
+										"key": "Upgrade-Insecure-Requests",
+										"value": "1"
+									},
+									{
+										"key": "User-Agent",
+										"value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.82 Safari/537.36"
+									},
+									{
+										"key": "Accept",
+										"value": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9"
+									},
+									{
+										"key": "Sec-Fetch-Site",
+										"value": "same-origin"
+									},
+									{
+										"key": "Sec-Fetch-Mode",
+										"value": "navigate"
+									},
+									{
+										"key": "Sec-Fetch-User",
+										"value": "?1"
+									},
+									{
+										"key": "Sec-Fetch-Dest",
+										"value": "document"
+									},
+									{
+										"key": "sec-ch-ua",
+										"value": "\"Google Chrome\";v=\"89\", \"Chromium\";v=\"89\", \";Not A Brand\";v=\"99\""
+									},
+									{
+										"key": "sec-ch-ua-mobile",
+										"value": "?0"
+									},
+									{
+										"key": "Referer",
+										"value": "https://go-{{env}}.test.fonterra.com/sap/bc/sec/oauth2/authorize?sap-client=100&response_type=code&client_id=MULEINT&redirect_uri=https%3A%2F%2Fanypoint.mulesoft.com%2Fexchange%2FoauthCallback.html&scope={{scope}}&state=anystate"
+									},
+									{
+										"key": "Accept-Language",
+										"value": "en-US,en;q=0.9"
+									},
+									{
+										"key": "Cookie",
+										"value": "BIGipServerEP_FIORY_DEV_POOL=u0021ggETvoGAW/Qdi/zoxdJ9YJJeVN0dK8N8A0j+OZOGemaev1CwUjr805ejuUexNZ41ZdEFMO4Q2k0Xkjg=; AzureAppProxyAnalyticCookie_ddd7ed7a-bba4-475d-a48e-f21bf639f1b9_1.3=3|hANm/K86gpXBfjCJGWJxj4UboR+iqwodcHgfTy19+hW31+GnM2PB3Tm2cZ+mu7iprR/qqZ1WHPp5Ins3HwjhhnFqcF5btADiPBHZEsVk4pvhpWpsGk6IaVu/arw5/1IzFU7xHqu7CiN1z6I0/F2Ohw==; MYSAPSSO2=AjQxMDMBABhaAFoAXwBIAEEAUgBSAEkAUwBLADYAIAACAAYxADAAMAADABBGAEQAMAAgACAAIAAgACAABAAYMgAwADIAMQAwADMAMQA4ADAAMwAwADcABQAEAAAACAYAAlgACQACRQD%2fAPwwgfkGCSqGSIb3DQEHAqCB6zCB6AIBATELMAkGBSsOAwIaBQAwCwYJKoZIhvcNAQcBMYHIMIHFAgEBMBowDjEMMAoGA1UEAxMDRkQwAggKIBUQICNWATAJBgUrDgMCGgUAoF0wGAYJKoZIhvcNAQkDMQsGCSqGSIb3DQEHATAcBgkqhkiG9w0BCQUxDxcNMjEwMzE4MDMwNzI2WjAjBgkqhkiG9w0BCQQxFgQUJgDWPwUu5no1prDd6cg5sVrP1VgwCQYHKoZIzjgEAwQvMC0CFD7OznQED2XupdiaAV%21iUPGkkAxsAhUAlSNJ30gbsLzo4GFSjC%21JtBLvRq4%3d; SAP_SESSIONID_FD0_100=RWCeAFm5Z0KBDUNswq1eoRDaJWCHlxHrghEAUFazLpo%3d; sap-usercontext=sap-language=EN&sap-client=100",
+										"disabled": true
+									}
+								],
+								"url": {
+									"raw": "https://go-{{env}}.test.fonterra.com/sap/bc/sec/oauth2/authorize/index.html?response_type=code&client_id=MULEINT&redirect_uri=https%3a%2f%2fanypoint.mulesoft.com%2fexchange%2foauthCallback.html&scope={{scope}}&state=anystate&sap-client=100&sap-language=EN",
+									"protocol": "https",
+									"host": [
+										"go-{{env}}",
+										"test",
+										"fonterra",
+										"com"
+									],
+									"path": [
+										"sap",
+										"bc",
+										"sec",
+										"oauth2",
+										"authorize",
+										"index.html"
+									],
+									"query": [
+										{
+											"key": "response_type",
+											"value": "code"
+										},
+										{
+											"key": "client_id",
+											"value": "MULEINT"
+										},
+										{
+											"key": "redirect_uri",
+											"value": "https%3a%2f%2fanypoint.mulesoft.com%2fexchange%2foauthCallback.html"
+										},
+										{
+											"key": "scope",
+											"value": "{{scope}}"
+										},
+										{
+											"key": "state",
+											"value": "anystate"
+										},
+										{
+											"key": "sap-client",
+											"value": "100"
+										},
+										{
+											"key": "sap-language",
+											"value": "EN"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "OAuth XSRF",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Response should return an x-csrf-token\", function () {\r",
+											"    var OAuth_X_CSRF_Token = null;\r",
+											"    console.log(pm.response.headers);\r",
+											"    pm.response.headers.each(responseHeader => {  \r",
+											"            if (responseHeader.key === 'x-csrf-token') {\r",
+											"                console.log(responseHeader.value);\r",
+											"                OAuth_X_CSRF_Token = responseHeader.value;\r",
+											"            }\r",
+											"        }\r",
+											"    );\r",
+											"    pm.expect(OAuth_X_CSRF_Token).to.exist;\r",
+											"\r",
+											"    pm.globals.set(\"OAuth_X_CSRF_Token\", OAuth_X_CSRF_Token);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Connection",
+										"value": "keep-alive"
+									},
+									{
+										"key": "sec-ch-ua",
+										"value": "\"Google Chrome\";v=\"89\", \"Chromium\";v=\"89\", \";Not A Brand\";v=\"99\""
+									},
+									{
+										"key": "Accept",
+										"value": "*/*"
+									},
+									{
+										"key": "X-CSRF-Token",
+										"value": "Fetch"
+									},
+									{
+										"key": "X-Requested-With",
+										"value": "XMLHttpRequest"
+									},
+									{
+										"key": "sec-ch-ua-mobile",
+										"value": "?0"
+									},
+									{
+										"key": "User-Agent",
+										"value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.82 Safari/537.36"
+									},
+									{
+										"key": "SAP-PASSPORT",
+										"value": "2A54482A0300E60000756E64657465726D696E6564202020202020202020202020202020202020202000005341505F4532455F54415F557365722020202020202020202020202020202020756E64657465726D696E65645F737461727475705F302020202020202020202020202020202020200005756E64657465726D696E65642020202020202020202020202020202020202020433542423431333632413143343739354236314339323031383143313539323720202000078BA9DB79989B4B55B2807AC7E45883030000000000000000000000000000000000000000000000E22A54482A"
+									},
+									{
+										"key": "Sec-Fetch-Site",
+										"value": "same-origin"
+									},
+									{
+										"key": "Sec-Fetch-Mode",
+										"value": "cors"
+									},
+									{
+										"key": "Sec-Fetch-Dest",
+										"value": "empty"
+									},
+									{
+										"key": "Referer",
+										"value": "https://go-{{env}}.test.fonterra.com/sap/bc/sec/oauth2/authorize/index.html?response_type=code&client_id=MULEINT&redirect_uri=https%3a%2f%2fanypoint.mulesoft.com%2fexchange%2foauthCallback.html&scope={{scope}}&sap-language=EN"
+									},
+									{
+										"key": "Accept-Language",
+										"value": "en-US,en;q=0.9"
+									},
+									{
+										"key": "Cookie",
+										"value": "BIGipServerEP_FIORY_DEV_POOL=u0021ggETvoGAW/Qdi/zoxdJ9YJJeVN0dK8N8A0j+OZOGemaev1CwUjr805ejuUexNZ41ZdEFMO4Q2k0Xkjg=; AzureAppProxyAnalyticCookie_ddd7ed7a-bba4-475d-a48e-f21bf639f1b9_1.3=3|hANm/K86gpXBfjCJGWJxj4UboR+iqwodcHgfTy19+hW31+GnM2PB3Tm2cZ+mu7iprR/qqZ1WHPp5Ins3HwjhhnFqcF5btADiPBHZEsVk4pvhpWpsGk6IaVu/arw5/1IzFU7xHqu7CiN1z6I0/F2Ohw==; MYSAPSSO2=AjQxMDMBABhaAFoAXwBIAEEAUgBSAEkAUwBLADYAIAACAAYxADAAMAADABBGAEQAMAAgACAAIAAgACAABAAYMgAwADIAMQAwADMAMQA4ADAAMwAwADcABQAEAAAACAYAAlgACQACRQD%2fAPwwgfkGCSqGSIb3DQEHAqCB6zCB6AIBATELMAkGBSsOAwIaBQAwCwYJKoZIhvcNAQcBMYHIMIHFAgEBMBowDjEMMAoGA1UEAxMDRkQwAggKIBUQICNWATAJBgUrDgMCGgUAoF0wGAYJKoZIhvcNAQkDMQsGCSqGSIb3DQEHATAcBgkqhkiG9w0BCQUxDxcNMjEwMzE4MDMwNzI2WjAjBgkqhkiG9w0BCQQxFgQUJgDWPwUu5no1prDd6cg5sVrP1VgwCQYHKoZIzjgEAwQvMC0CFD7OznQED2XupdiaAV%21iUPGkkAxsAhUAlSNJ30gbsLzo4GFSjC%21JtBLvRq4%3d; SAP_SESSIONID_FD0_100=RWCeAFm5Z0KBDUNswq1eoRDaJWCHlxHrghEAUFazLpo%3d; sap-usercontext=sap-language=EN&sap-client=100",
+										"disabled": true
+									}
+								],
+								"url": {
+									"raw": "https://go-{{env}}.test.fonterra.com/sap/bc/sec/oauth2/auth_ui_service/xsrf",
+									"protocol": "https",
+									"host": [
+										"go-{{env}}",
+										"test",
+										"fonterra",
+										"com"
+									],
+									"path": [
+										"sap",
+										"bc",
+										"sec",
+										"oauth2",
+										"auth_ui_service",
+										"xsrf"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "OAuth Prepare",
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Connection",
+										"value": "keep-alive"
+									},
+									{
+										"key": "sec-ch-ua",
+										"value": "\"Google Chrome\";v=\"89\", \"Chromium\";v=\"89\", \";Not A Brand\";v=\"99\""
+									},
+									{
+										"key": "X-CSRF-Token",
+										"value": "{{OAuth_X_CSRF_Token}}"
+									},
+									{
+										"key": "sec-ch-ua-mobile",
+										"value": "?0"
+									},
+									{
+										"key": "User-Agent",
+										"value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.82 Safari/537.36"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/x-www-form-urlencoded; charset=UTF-8"
+									},
+									{
+										"key": "Accept",
+										"value": "application/json, text/javascript, */*; q=0.01"
+									},
+									{
+										"key": "X-Requested-With",
+										"value": "XMLHttpRequest"
+									},
+									{
+										"key": "SAP-PASSPORT",
+										"value": "2A54482A0300E60000756E64657465726D696E6564202020202020202020202020202020202020202000005341505F4532455F54415F557365722020202020202020202020202020202020756E64657465726D696E65645F737461727475705F302020202020202020202020202020202020200005756E64657465726D696E65642020202020202020202020202020202020202020313039373341463546453637343143363930383539443030383331434632434420202000078BA9DB79989B4B55B2807AC7E45883030000000000000000000000000000000000000000000000E22A54482A"
+									},
+									{
+										"key": "Origin",
+										"value": "https://go-{{env}}.test.fonterra.com"
+									},
+									{
+										"key": "Sec-Fetch-Site",
+										"value": "same-origin"
+									},
+									{
+										"key": "Sec-Fetch-Mode",
+										"value": "cors"
+									},
+									{
+										"key": "Sec-Fetch-Dest",
+										"value": "empty"
+									},
+									{
+										"key": "Referer",
+										"value": "https://go-{{env}}.test.fonterra.com/sap/bc/sec/oauth2/authorize/index.html?response_type=code&client_id=MULEINT&redirect_uri=https%3a%2f%2fanypoint.mulesoft.com%2fexchange%2foauthCallback.html&scope={{scope}}&sap-language=EN"
+									},
+									{
+										"key": "Accept-Language",
+										"value": "en-US,en;q=0.9"
+									},
+									{
+										"key": "Cookie",
+										"value": "BIGipServerEP_FIORY_DEV_POOL=u0021ggETvoGAW/Qdi/zoxdJ9YJJeVN0dK8N8A0j+OZOGemaev1CwUjr805ejuUexNZ41ZdEFMO4Q2k0Xkjg=; AzureAppProxyAnalyticCookie_ddd7ed7a-bba4-475d-a48e-f21bf639f1b9_1.3=3|hANm/K86gpXBfjCJGWJxj4UboR+iqwodcHgfTy19+hW31+GnM2PB3Tm2cZ+mu7iprR/qqZ1WHPp5Ins3HwjhhnFqcF5btADiPBHZEsVk4pvhpWpsGk6IaVu/arw5/1IzFU7xHqu7CiN1z6I0/F2Ohw==; MYSAPSSO2=AjQxMDMBABhaAFoAXwBIAEEAUgBSAEkAUwBLADYAIAACAAYxADAAMAADABBGAEQAMAAgACAAIAAgACAABAAYMgAwADIAMQAwADMAMQA4ADAAMwAwADcABQAEAAAACAYAAlgACQACRQD%2fAPwwgfkGCSqGSIb3DQEHAqCB6zCB6AIBATELMAkGBSsOAwIaBQAwCwYJKoZIhvcNAQcBMYHIMIHFAgEBMBowDjEMMAoGA1UEAxMDRkQwAggKIBUQICNWATAJBgUrDgMCGgUAoF0wGAYJKoZIhvcNAQkDMQsGCSqGSIb3DQEHATAcBgkqhkiG9w0BCQUxDxcNMjEwMzE4MDMwNzI2WjAjBgkqhkiG9w0BCQQxFgQUJgDWPwUu5no1prDd6cg5sVrP1VgwCQYHKoZIzjgEAwQvMC0CFD7OznQED2XupdiaAV%21iUPGkkAxsAhUAlSNJ30gbsLzo4GFSjC%21JtBLvRq4%3d; SAP_SESSIONID_FD0_100=RWCeAFm5Z0KBDUNswq1eoRDaJWCHlxHrghEAUFazLpo%3d; sap-usercontext=sap-language=EN&sap-client=100",
+										"disabled": true
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "response_type=code&state=anystate&client_id=MULEINT&redirect_uri=https://anypoint.mulesoft.com/exchange/oauthCallback.html&scope=ZAPI_IAPR_PURCH_REQ_ITEM_SRV_0001 ZUSER_SRV_0001 ZTASKPROCESSING_0002 ZGOS_SRV_01_0001 Z_VENDOR_INVOICE_APPROVAL_SRV_0001 ZTASKPROCESSING_V2_SRV_0001",
+									"options": {
+										"raw": {
+											"language": "text"
+										}
+									}
+								},
+								"url": {
+									"raw": "https://go-{{env}}.test.fonterra.com/sap/bc/sec/oauth2/auth_ui_service/prepare",
+									"protocol": "https",
+									"host": [
+										"go-{{env}}",
+										"test",
+										"fonterra",
+										"com"
+									],
+									"path": [
+										"sap",
+										"bc",
+										"sec",
+										"oauth2",
+										"auth_ui_service",
+										"prepare"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "OAuth Allow",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"var jsonData = pm.response.json();\r",
+											"var oAuthCode = null;\r",
+											"\r",
+											"pm.test(\"Your test name\", function () {\r",
+											"    pm.expect(jsonData.redirect_uri).to.exist;\r",
+											"    oAuthCode = jsonData.redirect_uri.split('=')[1].split('&')[0];\r",
+											"    console.log(oAuthCode);\r",
+											"    pm.globals.set('oAuthCode', oAuthCode);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Connection",
+										"value": "keep-alive"
+									},
+									{
+										"key": "sec-ch-ua",
+										"value": "\"Google Chrome\";v=\"89\", \"Chromium\";v=\"89\", \";Not A Brand\";v=\"99\""
+									},
+									{
+										"key": "SAP-Perf-FESRec-opt",
+										"value": "undetermined,undetermined_click,,cr_89,8298,30607,,,0,,,,,,0,,,,"
+									},
+									{
+										"key": "X-CSRF-Token",
+										"value": "{{OAuth_X_CSRF_Token}}"
+									},
+									{
+										"key": "sec-ch-ua-mobile",
+										"value": "?0"
+									},
+									{
+										"key": "User-Agent",
+										"value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.82 Safari/537.36"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/x-www-form-urlencoded; charset=UTF-8"
+									},
+									{
+										"key": "Accept",
+										"value": "*/*"
+									},
+									{
+										"key": "SAP-Perf-FESRec",
+										"value": "8BA9DB79989B4B55B2807AC7E4588303,805694FB58884CE98EA03A8C9046365B,91,533,519,15,03FCA35D8BA9DB79989B4B55B2807AC7E4588303,33,547,win_10,SAP_UI5"
+									},
+									{
+										"key": "X-Requested-With",
+										"value": "XMLHttpRequest"
+									},
+									{
+										"key": "SAP-PASSPORT",
+										"value": "2A54482A0300E60000756E64657465726D696E6564202020202020202020202020202020202020202000005341505F4532455F54415F5573657220202020202020202020202020202020206964427574746F6E4163636570745F636C69636B5F312020202020202020202020202020202020200005756E64657465726D696E65642020202020202020202020202020202020202020344637394542464638334246343230303839413131344636354641354445304120202000078BA9DB79989B4B55B2807AC7E45883030000000000000000000000000000000000000000000000E22A54482A"
+									},
+									{
+										"key": "Origin",
+										"value": "https://go-{{env}}.test.fonterra.com"
+									},
+									{
+										"key": "Sec-Fetch-Site",
+										"value": "same-origin"
+									},
+									{
+										"key": "Sec-Fetch-Mode",
+										"value": "cors"
+									},
+									{
+										"key": "Sec-Fetch-Dest",
+										"value": "empty"
+									},
+									{
+										"key": "Referer",
+										"value": "https://go-{{env}}.test.fonterra.com/sap/bc/sec/oauth2/authorize/index.html?response_type=code&client_id=MULEINT&redirect_uri=https%3a%2f%2fanypoint.mulesoft.com%2fexchange%2foauthCallback.html&scope={{scope}}&state=anystate&sap-client=100&sap-language=EN"
+									},
+									{
+										"key": "Accept-Language",
+										"value": "en-US,en;q=0.9"
+									},
+									{
+										"key": "Cookie",
+										"value": "BIGipServerEP_FIORY_DEV_POOL=u0021ggETvoGAW/Qdi/zoxdJ9YJJeVN0dK8N8A0j+OZOGemaev1CwUjr805ejuUexNZ41ZdEFMO4Q2k0Xkjg=; AzureAppProxyAnalyticCookie_ddd7ed7a-bba4-475d-a48e-f21bf639f1b9_1.3=3|hANm/K86gpXBfjCJGWJxj4UboR+iqwodcHgfTy19+hW31+GnM2PB3Tm2cZ+mu7iprR/qqZ1WHPp5Ins3HwjhhnFqcF5btADiPBHZEsVk4pvhpWpsGk6IaVu/arw5/1IzFU7xHqu7CiN1z6I0/F2Ohw==; MYSAPSSO2=AjQxMDMBABhaAFoAXwBIAEEAUgBSAEkAUwBLADYAIAACAAYxADAAMAADABBGAEQAMAAgACAAIAAgACAABAAYMgAwADIAMQAwADMAMQA4ADAAMwAwADcABQAEAAAACAYAAlgACQACRQD%2fAPwwgfkGCSqGSIb3DQEHAqCB6zCB6AIBATELMAkGBSsOAwIaBQAwCwYJKoZIhvcNAQcBMYHIMIHFAgEBMBowDjEMMAoGA1UEAxMDRkQwAggKIBUQICNWATAJBgUrDgMCGgUAoF0wGAYJKoZIhvcNAQkDMQsGCSqGSIb3DQEHATAcBgkqhkiG9w0BCQUxDxcNMjEwMzE4MDMwNzI2WjAjBgkqhkiG9w0BCQQxFgQUJgDWPwUu5no1prDd6cg5sVrP1VgwCQYHKoZIzjgEAwQvMC0CFD7OznQED2XupdiaAV%21iUPGkkAxsAhUAlSNJ30gbsLzo4GFSjC%21JtBLvRq4%3d; SAP_SESSIONID_FD0_100=RWCeAFm5Z0KBDUNswq1eoRDaJWCHlxHrghEAUFazLpo%3d; sap-usercontext=sap-language=EN&sap-client=100",
+										"disabled": true
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "response_type=code&state=anystate&client_id=MULEINT&redirect_uri=https://anypoint.mulesoft.com/exchange/oauthCallback.html&scope=ZAPI_IAPR_PURCH_REQ_ITEM_SRV_0001 ZUSER_SRV_0001 ZTASKPROCESSING_0002 ZGOS_SRV_01_0001 Z_VENDOR_INVOICE_APPROVAL_SRV_0001 ZTASKPROCESSING_V2_SRV_0001 "
+								},
+								"url": {
+									"raw": "https://go-{{env}}.test.fonterra.com/sap/bc/sec/oauth2/auth_ui_service/allow",
+									"protocol": "https",
+									"host": [
+										"go-{{env}}",
+										"test",
+										"fonterra",
+										"com"
+									],
+									"path": [
+										"sap",
+										"bc",
+										"sec",
+										"oauth2",
+										"auth_ui_service",
+										"allow"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "OAuth Token",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"var jsonData = pm.response.json();\r",
+											"var oAuthToken = null;\r",
+											"\r",
+											"pm.test(\"Response should contain valid access_token\", function () {\r",
+											"    pm.expect(jsonData.access_token).to.exist;\r",
+											"    oAuthToken = jsonData.access_token;\r",
+											"    console.log(oAuthToken);\r",
+											"    pm.globals.set('oAuthToken', oAuthToken);\r",
+											"});\r",
+											"\r",
+											"var scope = pm.environment.get('scope');\r",
+											"scope = scope.replace(/%20/gm, \" \");\r",
+											"\r",
+											"\r",
+											"pm.test(\"Response should include all requested OAuth scopes\", function () {\r",
+											"    pm.expect(jsonData.scope).to.equal(scope)\r",
+											"})"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "basic",
+									"basic": [
+										{
+											"key": "password",
+											"value": "{{muleint}}",
+											"type": "string"
+										},
+										{
+											"key": "username",
+											"value": "MULEINT",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "grant_type",
+											"value": "authorization_code",
+											"type": "text"
+										},
+										{
+											"key": "code",
+											"value": "{{oAuthCode}}",
+											"type": "text"
+										},
+										{
+											"key": "redirect_uri",
+											"value": "https://anypoint.mulesoft.com/exchange/oauthCallback.html",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "https://go-{{env}}.test.fonterra.com/sap/bc/sec/oauth2/token?sap-client=100",
+									"protocol": "https",
+									"host": [
+										"go-{{env}}",
+										"test",
+										"fonterra",
+										"com"
+									],
+									"path": [
+										"sap",
+										"bc",
+										"sec",
+										"oauth2",
+										"token"
+									],
+									"query": [
+										{
+											"key": "sap-client",
+											"value": "100"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"auth": {
+						"type": "noauth"
+					},
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						}
+					]
+				},
+				{
+					"name": "Authentication",
+					"item": [
+						{
+							"name": "GET unknown client_id returns 401",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"\r",
+											"pm.test(\"Status code is 401\", function () {\r",
+											"    pm.response.to.have.status(401);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "client_id",
+										"value": "INVALID",
+										"type": "text",
+										"description": "(Required) "
+									},
+									{
+										"key": "client_secret",
+										"value": "{{client_secret}}",
+										"type": "text",
+										"description": "(Required) "
+									},
+									{
+										"key": "X-CSRF-Token",
+										"value": "Fetch",
+										"type": "text"
+									},
+									{
+										"key": "Cookie",
+										"value": "{{Cookie}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/invoices/delegations?taskType={{taskType}}",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"invoices",
+										"delegations"
+									],
+									"query": [
+										{
+											"key": "taskType",
+											"value": "{{taskType}}",
+											"description": "(Required) "
+										}
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "An error occured while processing your request.",
+									"originalRequest": {
+										"method": "GET",
+										"header": [
+											{
+												"description": "(Required) ",
+												"key": "client_id",
+												"value": "<string>"
+											},
+											{
+												"description": "(Required) ",
+												"key": "client_secret",
+												"value": "<string>"
+											},
+											{
+												"description": "(Required) ",
+												"key": "X-CSRF-Token",
+												"value": "<string>"
+											},
+											{
+												"description": "(Required) ",
+												"key": "Cookie",
+												"value": "<string>"
+											}
+										],
+										"url": {
+											"raw": "{{baseUrl}}/delegation?taskType=<string>",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"delegation"
+											],
+											"query": [
+												{
+													"key": "taskType",
+													"value": "<string>"
+												}
+											]
+										}
+									},
+									"status": "Internal Server Error",
+									"code": 500,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										}
+									],
+									"cookie": [],
+									"body": "{\n \"output\": {\n  \"code\": \"500\",\n  \"message\": \"An error occured while processing your request.\"\n }\n}"
+								},
+								{
+									"name": "The server has not found anything matching the Request-URI.",
+									"originalRequest": {
+										"method": "GET",
+										"header": [
+											{
+												"description": "(Required) ",
+												"key": "client_id",
+												"value": "<string>"
+											},
+											{
+												"description": "(Required) ",
+												"key": "client_secret",
+												"value": "<string>"
+											},
+											{
+												"description": "(Required) ",
+												"key": "X-CSRF-Token",
+												"value": "<string>"
+											},
+											{
+												"description": "(Required) ",
+												"key": "Cookie",
+												"value": "<string>"
+											}
+										],
+										"url": {
+											"raw": "{{baseUrl}}/delegation?taskType=<string>",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"delegation"
+											],
+											"query": [
+												{
+													"key": "taskType",
+													"value": "<string>"
+												}
+											]
+										}
+									},
+									"status": "Not Found",
+									"code": 404,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										}
+									],
+									"cookie": [],
+									"body": "{\n \"output\": {\n  \"code\": \"404\",\n  \"message\": \"The server has not found anything matching the Request-URI.\"\n }\n}"
+								},
+								{
+									"name": "Untitled Example",
+									"originalRequest": {
+										"method": "GET",
+										"header": [
+											{
+												"description": "(Required) ",
+												"key": "client_id",
+												"value": "<string>"
+											},
+											{
+												"description": "(Required) ",
+												"key": "client_secret",
+												"value": "<string>"
+											},
+											{
+												"description": "(Required) ",
+												"key": "X-CSRF-Token",
+												"value": "<string>"
+											},
+											{
+												"description": "(Required) ",
+												"key": "Cookie",
+												"value": "<string>"
+											}
+										],
+										"url": {
+											"raw": "{{baseUrl}}/delegation?taskType=<string>",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"delegation"
+											],
+											"query": [
+												{
+													"key": "taskType",
+													"value": "<string>"
+												}
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										}
+									],
+									"cookie": [],
+									"body": "{}"
+								},
+								{
+									"name": "The user is not authorized to perform the operation.",
+									"originalRequest": {
+										"method": "GET",
+										"header": [
+											{
+												"description": "(Required) ",
+												"key": "client_id",
+												"value": "<string>"
+											},
+											{
+												"description": "(Required) ",
+												"key": "client_secret",
+												"value": "<string>"
+											},
+											{
+												"description": "(Required) ",
+												"key": "X-CSRF-Token",
+												"value": "<string>"
+											},
+											{
+												"description": "(Required) ",
+												"key": "Cookie",
+												"value": "<string>"
+											}
+										],
+										"url": {
+											"raw": "{{baseUrl}}/delegation?taskType=<string>",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"delegation"
+											],
+											"query": [
+												{
+													"key": "taskType",
+													"value": "<string>"
+												}
+											]
+										}
+									},
+									"status": "Unauthorized",
+									"code": 401,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										}
+									],
+									"cookie": [],
+									"body": "{\n \"output\": {\n  \"code\": \"401\",\n  \"message\": \"The user is not authorized to perform the operation.\"\n }\n}"
+								},
+								{
+									"name": "The client used all of it's request quota for the current period.",
+									"originalRequest": {
+										"method": "GET",
+										"header": [
+											{
+												"description": "(Required) ",
+												"key": "client_id",
+												"value": "<string>"
+											},
+											{
+												"description": "(Required) ",
+												"key": "client_secret",
+												"value": "<string>"
+											},
+											{
+												"description": "(Required) ",
+												"key": "X-CSRF-Token",
+												"value": "<string>"
+											},
+											{
+												"description": "(Required) ",
+												"key": "Cookie",
+												"value": "<string>"
+											}
+										],
+										"url": {
+											"raw": "{{baseUrl}}/delegation?taskType=<string>",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"delegation"
+											],
+											"query": [
+												{
+													"key": "taskType",
+													"value": "<string>"
+												}
+											]
+										}
+									},
+									"status": "Too Many Requests",
+									"code": 429,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										}
+									],
+									"cookie": [],
+									"body": "{\n \"output\": {\n  \"code\": \"429\",\n  \"message\": \"The client used all of it's request quota for the current period.\"\n }\n}"
+								}
+							]
+						},
+						{
+							"name": "GET unknown client_secret returns 401",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"\r",
+											"pm.test(\"Status code is 401\", function () {\r",
+											"    pm.response.to.have.status(401);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "client_id",
+										"value": "{{client_id}}",
+										"type": "text",
+										"description": "(Required) "
+									},
+									{
+										"key": "client_secret",
+										"value": "INVALID",
+										"type": "text",
+										"description": "(Required) "
+									},
+									{
+										"key": "X-CSRF-Token",
+										"value": "Fetch",
+										"type": "text"
+									},
+									{
+										"key": "Cookie",
+										"value": "{{Cookie}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/leaves/delegations?taskType={{taskType}}",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"leaves",
+										"delegations"
+									],
+									"query": [
+										{
+											"key": "taskType",
+											"value": "{{taskType}}",
+											"description": "(Required) "
+										}
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "An error occured while processing your request.",
+									"originalRequest": {
+										"method": "GET",
+										"header": [
+											{
+												"description": "(Required) ",
+												"key": "client_id",
+												"value": "<string>"
+											},
+											{
+												"description": "(Required) ",
+												"key": "client_secret",
+												"value": "<string>"
+											},
+											{
+												"description": "(Required) ",
+												"key": "X-CSRF-Token",
+												"value": "<string>"
+											},
+											{
+												"description": "(Required) ",
+												"key": "Cookie",
+												"value": "<string>"
+											}
+										],
+										"url": {
+											"raw": "{{baseUrl}}/delegation?taskType=<string>",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"delegation"
+											],
+											"query": [
+												{
+													"key": "taskType",
+													"value": "<string>"
+												}
+											]
+										}
+									},
+									"status": "Internal Server Error",
+									"code": 500,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										}
+									],
+									"cookie": [],
+									"body": "{\n \"output\": {\n  \"code\": \"500\",\n  \"message\": \"An error occured while processing your request.\"\n }\n}"
+								},
+								{
+									"name": "Untitled Example",
+									"originalRequest": {
+										"method": "GET",
+										"header": [
+											{
+												"description": "(Required) ",
+												"key": "client_id",
+												"value": "<string>"
+											},
+											{
+												"description": "(Required) ",
+												"key": "client_secret",
+												"value": "<string>"
+											},
+											{
+												"description": "(Required) ",
+												"key": "X-CSRF-Token",
+												"value": "<string>"
+											},
+											{
+												"description": "(Required) ",
+												"key": "Cookie",
+												"value": "<string>"
+											}
+										],
+										"url": {
+											"raw": "{{baseUrl}}/delegation?taskType=<string>",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"delegation"
+											],
+											"query": [
+												{
+													"key": "taskType",
+													"value": "<string>"
+												}
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										}
+									],
+									"cookie": [],
+									"body": "{}"
+								},
+								{
+									"name": "The server has not found anything matching the Request-URI.",
+									"originalRequest": {
+										"method": "GET",
+										"header": [
+											{
+												"description": "(Required) ",
+												"key": "client_id",
+												"value": "<string>"
+											},
+											{
+												"description": "(Required) ",
+												"key": "client_secret",
+												"value": "<string>"
+											},
+											{
+												"description": "(Required) ",
+												"key": "X-CSRF-Token",
+												"value": "<string>"
+											},
+											{
+												"description": "(Required) ",
+												"key": "Cookie",
+												"value": "<string>"
+											}
+										],
+										"url": {
+											"raw": "{{baseUrl}}/delegation?taskType=<string>",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"delegation"
+											],
+											"query": [
+												{
+													"key": "taskType",
+													"value": "<string>"
+												}
+											]
+										}
+									},
+									"status": "Not Found",
+									"code": 404,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										}
+									],
+									"cookie": [],
+									"body": "{\n \"output\": {\n  \"code\": \"404\",\n  \"message\": \"The server has not found anything matching the Request-URI.\"\n }\n}"
+								},
+								{
+									"name": "The user is not authorized to perform the operation.",
+									"originalRequest": {
+										"method": "GET",
+										"header": [
+											{
+												"description": "(Required) ",
+												"key": "client_id",
+												"value": "<string>"
+											},
+											{
+												"description": "(Required) ",
+												"key": "client_secret",
+												"value": "<string>"
+											},
+											{
+												"description": "(Required) ",
+												"key": "X-CSRF-Token",
+												"value": "<string>"
+											},
+											{
+												"description": "(Required) ",
+												"key": "Cookie",
+												"value": "<string>"
+											}
+										],
+										"url": {
+											"raw": "{{baseUrl}}/delegation?taskType=<string>",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"delegation"
+											],
+											"query": [
+												{
+													"key": "taskType",
+													"value": "<string>"
+												}
+											]
+										}
+									},
+									"status": "Unauthorized",
+									"code": 401,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										}
+									],
+									"cookie": [],
+									"body": "{\n \"output\": {\n  \"code\": \"401\",\n  \"message\": \"The user is not authorized to perform the operation.\"\n }\n}"
+								},
+								{
+									"name": "The client used all of it's request quota for the current period.",
+									"originalRequest": {
+										"method": "GET",
+										"header": [
+											{
+												"description": "(Required) ",
+												"key": "client_id",
+												"value": "<string>"
+											},
+											{
+												"description": "(Required) ",
+												"key": "client_secret",
+												"value": "<string>"
+											},
+											{
+												"description": "(Required) ",
+												"key": "X-CSRF-Token",
+												"value": "<string>"
+											},
+											{
+												"description": "(Required) ",
+												"key": "Cookie",
+												"value": "<string>"
+											}
+										],
+										"url": {
+											"raw": "{{baseUrl}}/delegation?taskType=<string>",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"delegation"
+											],
+											"query": [
+												{
+													"key": "taskType",
+													"value": "<string>"
+												}
+											]
+										}
+									},
+									"status": "Too Many Requests",
+									"code": 429,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										}
+									],
+									"cookie": [],
+									"body": "{\n \"output\": {\n  \"code\": \"429\",\n  \"message\": \"The client used all of it's request quota for the current period.\"\n }\n}"
+								}
+							]
+						},
+						{
+							"name": "GET authenticated user returns 200",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"\r",
+											"var SAP_Instance = pm.environment.get('SAP_Instance');\r",
+											"\r",
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"x-csrf-token header can be present in the response\", function () {\r",
+											"    var responseHeaders = pm.response.headers.all();\r",
+											"    var xCsrfToken = null;\r",
+											"    for (responseHeader of responseHeaders) {\r",
+											"        if (responseHeader.key == \"x-csrf-token\") {\r",
+											"            console.log(responseHeader.value);\r",
+											"            xCsrfToken = responseHeader.value;\r",
+											"            pm.globals.set(\"X-CSRF-Token\", xCsrfToken);\r",
+											"        }\r",
+											"        \r",
+											"    }\r",
+											"    if (xCsrfToken == null) {\r",
+											"        pm.expect(false).equals(true, \"X-CSRF-Token not found in the response headers\")\r",
+											"    }\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Response can return a Cookie\", function () {\r",
+											"    var Cookie = null;\r",
+											"    console.log(pm.response.headers);\r",
+											"    pm.response.headers.each(responseHeader => {  \r",
+											"            if (responseHeader.key === 'cookie') {\r",
+											"                console.log(responseHeader.value);\r",
+											"                Cookie = responseHeader.value;\r",
+											"            }\r",
+											"        }\r",
+											"    );\r",
+											"\r",
+											"    if (Cookie != null) {\r",
+											"        regex = new RegExp(`^(sap-XSRF_${SAP_Instance}_100=.*;) .ath.*`);\r",
+											"        Cookie = Cookie.match(regex)[1];\r",
+											"        pm.globals.set(\"Cookie\", Cookie);\r",
+											"    }\r",
+											"    else {\r",
+											"        pm.expect(false).equals(true, \"Cookie not found in the response headers\")\r",
+											"    }\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"description": "(Required) ",
+										"key": "client_id",
+										"value": "{{client_id}}"
+									},
+									{
+										"description": "(Required) ",
+										"key": "client_secret",
+										"value": "{{client_secret}}"
+									},
+									{
+										"description": "(Required) ",
+										"key": "Cookie",
+										"value": "{{Cookie}}"
+									},
+									{
+										"description": "(Required) ",
+										"key": "X-Correlation-ID",
+										"value": "{{$guid}}"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/purchase-requisitions/tasks?offset={{offset}}&limit={{limit}}",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"purchase-requisitions",
+										"tasks"
+									],
+									"query": [
+										{
+											"key": "offset",
+											"value": "{{offset}}"
+										},
+										{
+											"key": "limit",
+											"value": "{{limit}}"
+										}
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "Untitled Example",
+									"originalRequest": {
+										"method": "GET",
+										"header": [
+											{
+												"description": "(Required) ",
+												"key": "client_id",
+												"value": "consectetur consequat"
+											},
+											{
+												"description": "(Required) ",
+												"key": "client_secret",
+												"value": "consectetur consequat"
+											},
+											{
+												"description": "(Required) ",
+												"key": "Authorization",
+												"value": "consectetur consequat"
+											},
+											{
+												"description": "(Required) ",
+												"key": "Cookie",
+												"value": "consectetur consequat"
+											},
+											{
+												"description": "(Required) ",
+												"key": "X-Correlation-ID",
+												"value": "consectetur consequat"
+											}
+										],
+										"url": {
+											"raw": "{{baseUrl}}/purchase-requisitions/tasks?detailed=false&offset=0&limit=10",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"purchase-requisitions",
+												"tasks"
+											],
+											"query": [
+												{
+													"key": "detailed",
+													"value": "false"
+												},
+												{
+													"key": "offset",
+													"value": "0"
+												},
+												{
+													"key": "limit",
+													"value": "10"
+												}
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										}
+									],
+									"cookie": [],
+									"body": "{\n \"code\": \"occaecat mollit\",\n \"message\": \"in\",\n \"databody\": {\n  \"taskList\": [\n   {\n    \"lineItems\": [\n     {\n      \"id\": \"dolore non\",\n      \"requisitionAmount\": -94198526.83756234,\n      \"currency\": \"ipsum\",\n      \"glAccount\": \"cupidatat est non pariatur\",\n      \"glAccountName\": \"sint anim minim eiusmod\",\n      \"quantity\": -51698548,\n      \"unit\": 65630301,\n      \"pricePerUnit\": -75578225.45291741,\n      \"vendorName\": \"sed id ullamco\",\n      \"shortText\": \"vol\",\n      \"wbsElement\": \"minim ad sint\",\n      \"wbsElementName\": \"cillum pariatur do\",\n      \"costCenter\": \"consectetur ut cillum\",\n      \"costCenterName\": \"id\",\n      \"workOrderNumber\": \"pariatur ullamco\",\n      \"site\": \"dolor est magna esse\"\n     }\n    ],\n    \"purchaseRequisitionNumber\": \"aliqua qui dolor ipsum\",\n    \"id\": \"cul\",\n    \"requestorName\": \"Excepteur in\",\n    \"currency\": \"tempor mollit voluptate\",\n    \"sourceSystem\": \"ARIBA\",\n    \"_links\": {\n     \"self\": \"consequat cupidatat dolor ut\"\n    },\n    \"totalAmount\": 48652736.26936874,\n    \"comments\": [\n     {\n      \"content\": \"culpa id\",\n      \"createdBy\": \"quis a\",\n      \"createdTimestamp\": \"1955-04-14T04:50:36.488Z\"\n     },\n     {\n      \"content\": \"aliquip occaecat nulla sit tempor\",\n      \"createdBy\": \"ipsum dolor culpa\",\n      \"createdTimestamp\": \"1959-09-10T19:22:37.838Z\"\n     }\n    ]\n   },\n   {\n    \"lineItems\": [\n     {\n      \"id\": \"velit et est aute\",\n      \"requisitionAmount\": -32129755.868960693,\n      \"currency\": \"qui in nulla occaecat\",\n      \"glAccount\": \"laborum reprehenderit nisi\",\n      \"glAccountName\": \"Lorem ex elit\",\n      \"quantity\": -86681397,\n      \"unit\": -94872394,\n      \"pricePerUnit\": 54984348.083102256,\n      \"vendorName\": \"nostrud Ut Lorem sed ex\",\n      \"shortText\": \"nisi eu sunt\",\n      \"wbsElement\": \"minim ipsum deserunt sed\",\n      \"wbsElementName\": \"Lorem exercitation laborum\",\n      \"costCenter\": \"sit consectetur\",\n      \"costCenterName\": \"reprehender\",\n      \"workOrderNumber\": \"est\",\n      \"site\": \"ut id adipisicing dolor\"\n     }\n    ],\n    \"purchaseRequisitionNumber\": \"id i\",\n    \"id\": \"magna\",\n    \"requestorName\": \"magna nulla dolore cupidatat\",\n    \"currency\": \"Duis incididunt\",\n    \"sourceSystem\": \"ARIBA\",\n    \"_links\": {\n     \"self\": \"a\"\n    },\n    \"totalAmount\": 69471660.8426772,\n    \"comments\": [\n     {\n      \"content\": \"ea sed velit\",\n      \"createdBy\": \"nisi ut\",\n      \"createdTimestamp\": \"2001-05-27T22:42:04.638Z\"\n     },\n     {\n      \"content\": \"est esse elit\",\n      \"createdBy\": \"ut culpa consequat eu\",\n      \"createdTimestamp\": \"1955-12-03T23:50:01.425Z\"\n     }\n    ]\n   }\n  ]\n },\n \"_links\": {\n  \"previous\": \"consectetur laborum\",\n  \"self\": \"cillum ea nostrud\",\n  \"first\": \"nisi est\",\n  \"next\": \"nulla magna in fugiat\",\n  \"last\": \"cupidatat Lorem ullamco magna\"\n },\n \"offset\": -58759038.399746366,\n \"count\": 15144166.153065577\n}"
+								},
+								{
+									"name": "The server error response code indicates that the request is malformed, such as a message body format error.",
+									"originalRequest": {
+										"method": "GET",
+										"header": [
+											{
+												"description": "(Required) ",
+												"key": "client_id",
+												"value": "consectetur consequat"
+											},
+											{
+												"description": "(Required) ",
+												"key": "client_secret",
+												"value": "consectetur consequat"
+											},
+											{
+												"description": "(Required) ",
+												"key": "Authorization",
+												"value": "consectetur consequat"
+											},
+											{
+												"description": "(Required) ",
+												"key": "Cookie",
+												"value": "consectetur consequat"
+											},
+											{
+												"description": "(Required) ",
+												"key": "X-Correlation-ID",
+												"value": "consectetur consequat"
+											}
+										],
+										"url": {
+											"raw": "{{baseUrl}}/purchase-requisitions/tasks?detailed=false&offset=0&limit=10",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"purchase-requisitions",
+												"tasks"
+											],
+											"query": [
+												{
+													"key": "detailed",
+													"value": "false"
+												},
+												{
+													"key": "offset",
+													"value": "0"
+												},
+												{
+													"key": "limit",
+													"value": "10"
+												}
+											]
+										}
+									},
+									"status": "Bad Request",
+									"code": 400,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										}
+									],
+									"cookie": [],
+									"body": "{\n \"code\": \"nisi\",\n \"message\": \"tempor reprehenderit nisi\",\n \"correlationId\": \"in dolor consequat cupidatat\",\n \"errorList\": [\n  {\n   \"errorDescription\": \"tempor dolor Ut sit\"\n  },\n  {\n   \"errorDescription\": \"ea do velit\"\n  }\n ]\n}"
+								},
+								{
+									"name": "The user is not authorized to perform the operation.",
+									"originalRequest": {
+										"method": "GET",
+										"header": [
+											{
+												"description": "(Required) ",
+												"key": "client_id",
+												"value": "consectetur consequat"
+											},
+											{
+												"description": "(Required) ",
+												"key": "client_secret",
+												"value": "consectetur consequat"
+											},
+											{
+												"description": "(Required) ",
+												"key": "Authorization",
+												"value": "consectetur consequat"
+											},
+											{
+												"description": "(Required) ",
+												"key": "Cookie",
+												"value": "consectetur consequat"
+											},
+											{
+												"description": "(Required) ",
+												"key": "X-Correlation-ID",
+												"value": "consectetur consequat"
+											}
+										],
+										"url": {
+											"raw": "{{baseUrl}}/purchase-requisitions/tasks?detailed=false&offset=0&limit=10",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"purchase-requisitions",
+												"tasks"
+											],
+											"query": [
+												{
+													"key": "detailed",
+													"value": "false"
+												},
+												{
+													"key": "offset",
+													"value": "0"
+												},
+												{
+													"key": "limit",
+													"value": "10"
+												}
+											]
+										}
+									},
+									"status": "Unauthorized",
+									"code": 401,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										}
+									],
+									"cookie": [],
+									"body": "{\n \"code\": \"nisi\",\n \"message\": \"tempor reprehenderit nisi\",\n \"correlationId\": \"in dolor consequat cupidatat\",\n \"errorList\": [\n  {\n   \"errorDescription\": \"tempor dolor Ut sit\"\n  },\n  {\n   \"errorDescription\": \"ea do velit\"\n  }\n ]\n}"
+								},
+								{
+									"name": "The server error response code indicates that the authenticated user doesn't have permission to the request resource.",
+									"originalRequest": {
+										"method": "GET",
+										"header": [
+											{
+												"description": "(Required) ",
+												"key": "client_id",
+												"value": "consectetur consequat"
+											},
+											{
+												"description": "(Required) ",
+												"key": "client_secret",
+												"value": "consectetur consequat"
+											},
+											{
+												"description": "(Required) ",
+												"key": "Authorization",
+												"value": "consectetur consequat"
+											},
+											{
+												"description": "(Required) ",
+												"key": "Cookie",
+												"value": "consectetur consequat"
+											},
+											{
+												"description": "(Required) ",
+												"key": "X-Correlation-ID",
+												"value": "consectetur consequat"
+											}
+										],
+										"url": {
+											"raw": "{{baseUrl}}/purchase-requisitions/tasks?detailed=false&offset=0&limit=10",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"purchase-requisitions",
+												"tasks"
+											],
+											"query": [
+												{
+													"key": "detailed",
+													"value": "false"
+												},
+												{
+													"key": "offset",
+													"value": "0"
+												},
+												{
+													"key": "limit",
+													"value": "10"
+												}
+											]
+										}
+									},
+									"status": "Forbidden",
+									"code": 403,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										}
+									],
+									"cookie": [],
+									"body": "{\n \"code\": \"nisi\",\n \"message\": \"tempor reprehenderit nisi\",\n \"correlationId\": \"in dolor consequat cupidatat\",\n \"errorList\": [\n  {\n   \"errorDescription\": \"tempor dolor Ut sit\"\n  },\n  {\n   \"errorDescription\": \"ea do velit\"\n  }\n ]\n}"
+								},
+								{
+									"name": "The server has not found anything matching the Request-URI.resource.",
+									"originalRequest": {
+										"method": "GET",
+										"header": [
+											{
+												"description": "(Required) ",
+												"key": "client_id",
+												"value": "consectetur consequat"
+											},
+											{
+												"description": "(Required) ",
+												"key": "client_secret",
+												"value": "consectetur consequat"
+											},
+											{
+												"description": "(Required) ",
+												"key": "Authorization",
+												"value": "consectetur consequat"
+											},
+											{
+												"description": "(Required) ",
+												"key": "Cookie",
+												"value": "consectetur consequat"
+											},
+											{
+												"description": "(Required) ",
+												"key": "X-Correlation-ID",
+												"value": "consectetur consequat"
+											}
+										],
+										"url": {
+											"raw": "{{baseUrl}}/purchase-requisitions/tasks?detailed=false&offset=0&limit=10",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"purchase-requisitions",
+												"tasks"
+											],
+											"query": [
+												{
+													"key": "detailed",
+													"value": "false"
+												},
+												{
+													"key": "offset",
+													"value": "0"
+												},
+												{
+													"key": "limit",
+													"value": "10"
+												}
+											]
+										}
+									},
+									"status": "Not Found",
+									"code": 404,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										}
+									],
+									"cookie": [],
+									"body": "{\n \"code\": \"nisi\",\n \"message\": \"tempor reprehenderit nisi\",\n \"correlationId\": \"in dolor consequat cupidatat\",\n \"errorList\": [\n  {\n   \"errorDescription\": \"tempor dolor Ut sit\"\n  },\n  {\n   \"errorDescription\": \"ea do velit\"\n  }\n ]\n}"
+								},
+								{
+									"name": "An error occured while processing your request.",
+									"originalRequest": {
+										"method": "GET",
+										"header": [
+											{
+												"description": "(Required) ",
+												"key": "client_id",
+												"value": "consectetur consequat"
+											},
+											{
+												"description": "(Required) ",
+												"key": "client_secret",
+												"value": "consectetur consequat"
+											},
+											{
+												"description": "(Required) ",
+												"key": "Authorization",
+												"value": "consectetur consequat"
+											},
+											{
+												"description": "(Required) ",
+												"key": "Cookie",
+												"value": "consectetur consequat"
+											},
+											{
+												"description": "(Required) ",
+												"key": "X-Correlation-ID",
+												"value": "consectetur consequat"
+											}
+										],
+										"url": {
+											"raw": "{{baseUrl}}/purchase-requisitions/tasks?detailed=false&offset=0&limit=10",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"purchase-requisitions",
+												"tasks"
+											],
+											"query": [
+												{
+													"key": "detailed",
+													"value": "false"
+												},
+												{
+													"key": "offset",
+													"value": "0"
+												},
+												{
+													"key": "limit",
+													"value": "10"
+												}
+											]
+										}
+									},
+									"status": "Internal Server Error",
+									"code": 500,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										}
+									],
+									"cookie": [],
+									"body": "{\n \"code\": \"nisi\",\n \"message\": \"tempor reprehenderit nisi\",\n \"correlationId\": \"in dolor consequat cupidatat\",\n \"errorList\": [\n  {\n   \"errorDescription\": \"tempor dolor Ut sit\"\n  },\n  {\n   \"errorDescription\": \"ea do velit\"\n  }\n ]\n}"
+								},
+								{
+									"name": "The server error response code indicates that the server is not ready to handle the",
+									"originalRequest": {
+										"method": "GET",
+										"header": [
+											{
+												"description": "(Required) ",
+												"key": "client_id",
+												"value": "consectetur consequat"
+											},
+											{
+												"description": "(Required) ",
+												"key": "client_secret",
+												"value": "consectetur consequat"
+											},
+											{
+												"description": "(Required) ",
+												"key": "Authorization",
+												"value": "consectetur consequat"
+											},
+											{
+												"description": "(Required) ",
+												"key": "Cookie",
+												"value": "consectetur consequat"
+											},
+											{
+												"description": "(Required) ",
+												"key": "X-Correlation-ID",
+												"value": "consectetur consequat"
+											}
+										],
+										"url": {
+											"raw": "{{baseUrl}}/purchase-requisitions/tasks?detailed=false&offset=0&limit=10",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"purchase-requisitions",
+												"tasks"
+											],
+											"query": [
+												{
+													"key": "detailed",
+													"value": "false"
+												},
+												{
+													"key": "offset",
+													"value": "0"
+												},
+												{
+													"key": "limit",
+													"value": "10"
+												}
+											]
+										}
+									},
+									"status": "Service Unavailable",
+									"code": 503,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										}
+									],
+									"cookie": [],
+									"body": "{\n \"code\": \"nisi\",\n \"message\": \"tempor reprehenderit nisi\",\n \"correlationId\": \"in dolor consequat cupidatat\",\n \"errorList\": [\n  {\n   \"errorDescription\": \"tempor dolor Ut sit\"\n  },\n  {\n   \"errorDescription\": \"ea do velit\"\n  }\n ]\n}"
+								}
+							]
+						}
+					]
+				}
+			],
+			"auth": {
+				"type": "bearer",
+				"bearer": [
+					{
+						"key": "token",
+						"value": "{{oAuthToken}}",
+						"type": "string"
+					}
+				]
+			},
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "/"
+		},
+		{
+			"key": "variable_key",
+			"value": ""
+		}
+	]
+}
