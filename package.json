@@ -4,8 +4,9 @@
   "description": "Server-side functional and performance test framework",
   "main": "index.js",
   "scripts": {
-    "test": "mocha --sort=true --recursive --ignore=**/*.perf.js --reporter mochawesome --require mochawesome/register",
+    "test": "mocha --sort=true --recursive --ignore=**/*.perf.js --require mochawesome/register --reporter mochawesome --reporter-options reportDir=./results/integration/,reportFilename=index.html",
     "perf-test": "k6 run ./clients/k6-client.js",
+    "generate-k6-html-report": "node ./k6-html-reporter.js",
     "helios-perf-test": "k6 run --http-debug=full ./test/1.helios-tne-expense-exp-api/performance/accounting-document.perf.js",
     "helios-postman-perf-test": "k6 run --http-debug=full ./postman-scripts/helios-exp-api.js",
     "iapprove-postman-perf-test": "k6 run --http-debug=full ./postman-scripts/iapprove-exp-api-v3.js",
@@ -22,6 +23,7 @@
     "fs.promises": "^0.1.2",
     "glob": "^7.2.0",
     "k6": "0.0.0",
+    "k6-html-reporter": "^1.0.5",
     "mocha": "^9.1.3",
     "mochawesome": "^7.0.1",
     "nodemon": "^2.0.15",

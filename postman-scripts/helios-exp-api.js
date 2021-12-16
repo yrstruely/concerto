@@ -4,7 +4,11 @@ import "./libs/shim/core.js";
 import "./libs/shim/urijs.js";
 import "./libs/shim/expect.js";
 import { group } from "k6";
+import http from 'k6/http';
+import { jUnit, textSummary, html } from 'https://jslib.k6.io/k6-summary/0.0.1/index.js';
+import { htmlReport } from "https://raw.githubusercontent.com/benc-uk/k6-reporter/main/dist/bundle.js";
 import dotenv from "k6/x/dotenv";
+
 
 const PROJECT_DIR = '../'
 const env = dotenv.parse(open(PROJECT_DIR + ".env.develop.local"));
@@ -24,6 +28,25 @@ export let options = {
     checks: ['rate>0.9'],
   },
 };
+
+export function handleSummary(data) {
+  console.log('Preparing the end-of-test summary...');
+
+  // Send the results to some remote server or trigger a hook
+  //const resp = http.post('https://httpbin.test.k6.io/kerrys-perf-test-results', JSON.stringify(data));
+  //if (resp.status != 200) {
+  //  console.error('Could not send summary, got status ' + resp.status);
+  //}
+
+  return {
+    'stdout': textSummary(data, { indent: ' ', enableColors: true }), // Show the text summary to stdout...
+    '/concerto/results/performance/junit.xml': jUnit(data), // but also transform it and save it as a JUnit XML...
+    '/concerto/results/performance/summary.json': JSON.stringify(data), // and a JSON with all the details...
+    '/concerto/results/performance/result.html': htmlReport(data)
+    // And any other JS transformation of the data you can think of,
+    // you can write your own JS helpers to transform the summary data however you like!
+  };
+}
 
 const Pre = Symbol.for("pre");
 const Request = Symbol.for("request");
