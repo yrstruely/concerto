@@ -4,7 +4,6 @@ import "./libs/shim/core.js";
 import "./libs/shim/urijs.js";
 import "./libs/shim/expect.js";
 import { group } from "k6";
-import http from 'k6/http';
 import { jUnit, textSummary, html } from 'https://jslib.k6.io/k6-summary/0.0.1/index.js';
 import { htmlReport } from "https://raw.githubusercontent.com/benc-uk/k6-reporter/main/dist/bundle.js";
 import dotenv from "k6/x/dotenv";
@@ -19,13 +18,14 @@ console.log(data)
 export let options = {
   maxRedirects: 4,
   stages: [
-    { target: 5, duration: '30s' },
-    { target: 10, duration: '120s' },
+    { target: 1, duration: '30s' },
+    { target: 3, duration: '120s' },
     { target: 0, duration: '30s' }
 ],
   thresholds: {
-    // the rate of successful checks should be higher than 90%
-    checks: ['rate>0.9'],
+    http_req_failed: ['rate<0.01'], // http errors should be less than 1%
+    http_req_duration: ['p(95)<6000', 'p(99)<8000'], // 95% of requests should be below 200ms
+    checks: ['rate>0.9'] // the rate of successful checks should be higher than 90%
   },
 };
 
@@ -478,8 +478,8 @@ export default function() {
             });
           }
         });
-
-        postman[Pre].pop();
+        
+        postman[Pre].pop();  
       });
 
       group("card", function() {
@@ -1271,10 +1271,10 @@ export default function() {
           }
         });
 
-        postman[Pre].pop();
+        postman[Pre].pop();       
       });
 
-      postman[Pre].pop();
-    });
+      postman[Pre].pop();    
+    });    
   });
 }

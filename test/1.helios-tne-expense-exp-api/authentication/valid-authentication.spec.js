@@ -1,5 +1,5 @@
-require('dotenv').config({ path: '.env.develop.local' })
 const PROJECT_DIR = '../../../'
+require('dotenv').config({ path: `${PROJECT_DIR}${process.env.NODE_ENV}` })
 const { HeliosClient } = require(PROJECT_DIR + 'clients/helios-client.js')
 const client = new HeliosClient()
 const { formatDate } = require(PROJECT_DIR + './helpers/format-date.js')

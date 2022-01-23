@@ -1,5 +1,5 @@
-require('dotenv').config({ path: '.env.develop.local' })
 const PROJECT_DIR = '../../../../'
+require('dotenv').config({ path: `${PROJECT_DIR}${process.env.NODE_ENV}` })
 const { HeliosClient } = require(PROJECT_DIR + 'clients/helios-client.js')
 const client = new HeliosClient()
 const expect = require('chai').expect
@@ -16,5 +16,10 @@ describe('Helios Time and Expense Management Experience API', async function () 
             expect(result.status).equals(expectedHttpStatus)
         })
         .timeout(10000)
+
+        it(`HELIOS_TNE_EXP_BASE_URL should be 'https://dev.api.fonterra.com' because that is configured in the .env file`, function () {
+            console.log(process.env.HELIOS_TNE_EXP_BASE_URL)
+            expect(process.env.HELIOS_TNE_EXP_BASE_URL).to.equal('https://dev.api.fonterra.com')
+        })
     })
 })
