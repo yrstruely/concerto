@@ -4,7 +4,7 @@ import { sleep, check } from 'k6';
 import { Counter } from 'k6/metrics';
 import { html, jUnit, textSummary } from 'https://jslib.k6.io/k6-summary/0.0.1/index.js';
 import dotenv from "k6/x/dotenv";
-const env = dotenv.parse(open(PROJECT_DIR + ".env.develop.local"))
+const env = dotenv.parse(open(PROJECT_DIR + process.env.NODE_ENV))
 const { formatDate } = require(PROJECT_DIR + './helpers/format-date.js')
 const { accountingDocumentReferences } = require(PROJECT_DIR + './helpers/accounting-document-references.js')
 import { uuidv4 } from "https://jslib.k6.io/k6-utils/1.0.0/index.js";

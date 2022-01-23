@@ -1,5 +1,5 @@
-require('dotenv').config({ path: '.env.develop.local' })
 const PROJECT_DIR = '../../'
+require('dotenv').config({ path: `${PROJECT_DIR}${process.env.NODE_ENV}` })
 const { GorestClient } = require(PROJECT_DIR + 'clients/gorest-client.js')
 const client = new GorestClient()
 const fileIO = require(PROJECT_DIR + 'persistent.js')
