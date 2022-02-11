@@ -2,7 +2,7 @@ const { AxiosClient } = require('./axios-client.js')
 const client = new AxiosClient()
 const fileIO = require('../persistent.js')
 const PROJECT_DIR = '../'
-require('dotenv').config({ path: `${PROJECT_DIR}${process.env.NODE_ENV}` })
+require('dotenv').config()
 const { formatDate } = require(PROJECT_DIR + './helpers/format-date.js')
 const { accountingDocumentReferences } = require(PROJECT_DIR + './helpers/accounting-document-references.js')
 const expect = require('chai').expect
