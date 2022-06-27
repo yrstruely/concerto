@@ -1,15 +1,12 @@
 {
-  "name": "concerto",
-  "version": "1.0.0",
+  "name": "concerto-template",
+  "version": "1.2.2",
   "description": "Server-side functional and performance test framework",
   "main": "index.js",
   "scripts": {
-    "test": "mocha --sort=true --recursive --ignore=**/*.perf.js --require mochawesome/register --reporter mochawesome --reporter-options reportDir=./results/integration/,reportFilename=index.html",
-    "perf-test": "k6 run ./clients/k6-client.js",
+    "test": "mocha --sort=true --recursive --ignore=**/*.perf.js --require mochawesome/register --reporter mocha-multi-reporters --reporter-options configFile=./results/config.json",
+    "perf-test": "k6 run  --http-debug=full ./clients/k6-client.js",
     "generate-k6-html-report": "node ./k6-html-reporter.js",
-    "helios-perf-test": "k6 run --http-debug=full ./test/1.helios-tne-expense-exp-api/performance/accounting-document.perf.js",
-    "helios-postman-perf-test": "k6 run --http-debug=full ./postman-scripts/helios-exp-api.js",
-    "iapprove-postman-perf-test": "k6 run --http-debug=full ./postman-scripts/iapprove-exp-api-v3.js",
     "debug": "nodemon --inspect=0.0.0.0:9229 index.js"
   },
   "author": "Kerry Harris",
@@ -25,6 +22,8 @@
     "k6": "0.0.0",
     "k6-html-reporter": "^1.0.5",
     "mocha": "^9.1.3",
+    "mocha-junit-reporter": "^2.0.2",
+    "mocha-multi-reporters": "^1.5.1",
     "mochawesome": "^7.0.1",
     "nodemon": "^2.0.15",
     "socks-proxy-agent": "^6.1.0",
@@ -32,8 +31,12 @@
     "uuid": "^8.3.2"
   },
   "dependencies": {
+    "ajv": "^8.10.0",
     "axios-cookiejar-support": "^2.0.3",
+    "cheerio": "^1.0.0-rc.10",
     "https": "^1.0.0",
+    "moment-timezone": "^0.5.34",
+    "qs": "^6.10.3",
     "tough-cookie": "^4.0.0"
   }
 }
