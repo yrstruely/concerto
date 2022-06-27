@@ -4,7 +4,7 @@ import { sleep, check } from 'k6';
 import { Counter } from 'k6/metrics';
 import { html, jUnit, textSummary } from 'https://jslib.k6.io/k6-summary/0.0.1/index.js';
 import dotenv from "k6/x/dotenv";
-const env = dotenv.parse(open(PROJECT_DIR + process.env.NODE_ENV))
+const env = dotenv.parse(open(PROJECT_DIR + '.env'))
 const { formatDate } = require(PROJECT_DIR + './helpers/format-date.js')
 const { accountingDocumentReferences } = require(PROJECT_DIR + './helpers/accounting-document-references.js')
 import { uuidv4 } from "https://jslib.k6.io/k6-utils/1.0.0/index.js";
@@ -92,7 +92,7 @@ export const options = {
 };
 
 export default function () {
-    console.log(`headers = ${JSON.stringify(customized_headers)}`)
+    console.log(`headers = ${JSON.stringify(config.headers)}`)
     console.log(`config = ${JSON.stringify(config.data)}`)
     const res = http.request(config.method, config.url, JSON.stringify(config.data), { headers: config.headers });
 
@@ -103,3 +103,16 @@ export default function () {
         'Document posted successfully': (r) => JSON.parse(r.body).description.includes('Document posted successfully'),
     });
 }
+
+export function handleSummary(data) {
+    console.log('Preparing the end-of-test summary...');
+  
+    return {
+      'stdout': textSummary(data, { indent: ' ', enableColors: true }), // Show the text summary to stdout...
+      './results/performance/junit.xml': jUnit(data), // but also transform it and save it as a JUnit XML...
+      './results/performance/summary.json': JSON.stringify(data), // and a JSON with all the details...
+      './results/performance/summary.html': html(data)
+      // And any other JS transformation of the data you can think of,
+      // you can write your own JS helpers to transform the summary data however you like!
+    };
+  }
