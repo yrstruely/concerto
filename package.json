@@ -1,24 +1,32 @@
 {
-  "name": "concerto-template",
-  "version": "1.2.2",
+  "name": "concerto",
+  "version": "2.0.0",
   "description": "Server-side functional and performance test framework",
   "main": "index.js",
+  "type": "module",
   "scripts": {
-    "test": "mocha --sort=true --recursive --ignore=**/*.perf.js --require mochawesome/register --reporter mocha-multi-reporters --reporter-options configFile=./results/config.json",
-    "perf-test": "k6 run  --http-debug=full ./clients/k6-client.js",
-    "generate-k6-html-report": "node ./k6-html-reporter.js",
-    "debug": "nodemon --inspect=0.0.0.0:9229 index.js"
+    "test": "mocha --sort=true --recursive --ignore=**/*.perf.js --ignore=**/*.ignore.js --require mochawesome/register --reporter mocha-multi-reporters --reporter-options configFile=./results/config.json",
+    "generate-k6-config": "node ./helpers/k6/k6-config-generator.js",
+    "perf-test": "k6 run ./client-configs/k6-config.js",
+    "perf-test-local": "k6 run  --http-debug=full ./client-configs/k6-config.js",
+    "generate-k6-html-report": "node ./helpers/k6/k6-html-reporter.js",
+    "debug": "nodemon --inspect=0.0.0.0:9229 index.js",
+    "npm-update": "npm install -g npm@latest",
+    "npm-audit-fix": "npm audit fix"
   },
   "author": "Kerry Harris",
   "license": "ISC",
-  "devDependencies": {
+  "bin": {
+    "concerto": "./cli.js"
+  },
+  "dependencies": {
     "axios": "^0.24.0",
     "chai": "^4.3.4",
     "dotenv": "^10.0.0",
     "faker": "^5.5.3",
     "fs": "0.0.1-security",
     "fs.promises": "^0.1.2",
-    "glob": "^7.2.0",
+    "glob": "^7.2.3",
     "k6": "0.0.0",
     "k6-html-reporter": "^1.0.5",
     "mocha": "^9.1.3",
@@ -28,14 +36,16 @@
     "nodemon": "^2.0.15",
     "socks-proxy-agent": "^6.1.0",
     "tunnel": "0.0.6",
-    "uuid": "^8.3.2"
-  },
-  "dependencies": {
+    "uuid": "^8.3.2",
     "ajv": "^8.10.0",
     "axios-cookiejar-support": "^2.0.3",
     "cheerio": "^1.0.0-rc.10",
+    "commander": "^10.0.1",
+    "get-stream": "^6.0.1",
     "https": "^1.0.0",
     "moment-timezone": "^0.5.34",
+    "pdfkit": "^0.13.0",
+    "puppeteer": "^18.0.4",
     "qs": "^6.10.3",
     "tough-cookie": "^4.0.0"
   }
