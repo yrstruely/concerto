@@ -1,5 +1,5 @@
 {
-  "name": "concerto",
+  "name": "@yrstruely/concerto",
   "version": "2.0.0",
   "description": "Server-side functional and performance test framework",
   "main": "index.js",
