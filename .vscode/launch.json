@@ -5,6 +5,20 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "Run cocerto command line",
+            "program": "${workspaceFolder}/cli.js",
+            "args": [
+                "test",
+                "functional",
+                "-m"
+            ],
+            "request": "launch",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "type": "node"
+        },
+        {
             "args": [
                 "-u",
                 "bdd",

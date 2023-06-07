@@ -1,0 +1,20 @@
+
+version: '3.8'
+
+services:
+ concerto:
+  build:
+   context: .
+  ports:
+   - 80:80
+   - 443:443
+  volumes:
+   - ./:/concerto
+   - test_data:/results
+  command: /bin/sh -c "npm-update ; npm run test ; npm run generate-k6-config ; npm run perf-test ; npm run generate-k6-html-report"
+  #command: npm run test
+  #command: npm run perf-test
+  #command: npm run debug
+
+volumes:
+ test_data:
