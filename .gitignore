@@ -25,8 +25,8 @@ temp/
 mochawesome-report/
 
 #results
-!results/config.json
 results/*.json
+!results/config.json
 results/*.png
 results/integration/*
 results/performance/*
