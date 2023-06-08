@@ -1,0 +1,10 @@
+{
+    "reporterEnabled": "mochawesome, mocha-junit-reporter",
+    "mochawesomeReporterOptions": {
+        "reportDir": "./results/integration/",
+        "reportFilename": "index.html"
+    },
+    "mochaJunitReporterReporterOptions": {
+        "mochaFile": "./results/integration/junit.xml"
+    }
+}
