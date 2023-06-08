@@ -20,7 +20,7 @@ This project is also designed to be built and run in a docker container so that 
 # Installation
 - Install the concerto npm package globally
   ```sh
-  npm install -g concerto
+  npm install -g @yrstruely/concerto
   ```
 - Create a directory for your API testing project `<project-dir>` and `cd` into it
   ```sh
@@ -88,7 +88,7 @@ The k6 tests are seperated into two files like this is so that the performance t
 
 Most of the time, you will not need to change the `k6-imports-template.js` file (unless you want to add extra libraries to k6).
 
-As concerto autogenerates performance test configuration methods, all you need to do is link those methods to your k6 performance test configuration and run them. An example of how this is done can be seen in the `k6-exports-template.js` file.
+As concerto auto-generates performance test configuration methods, all you need to do is link those methods to your k6 performance test configuration and run them. An example of how this is done can be seen in the `k6-exports-template.js` file.
 ### Steps:
 1. In the `k6-exports-template.js` file create API method config variables from your existing API methods in your `./client-configs/sample-client-config.js` file --- *just assume they already exist!*
 2. For example: ```const getPostsConfig = getPosts()``` --- *where `getPosts()` is an existing method from `./client-configs/sample-client-config.js`*
