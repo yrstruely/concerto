@@ -20,16 +20,16 @@ program
     .description('Initialize new concerto project in the current working directory')
     .action(() => {
         let concertoNpmRootDir
-        const concertoNpmProjectRootDir = `${process.cwd()}/node_modules/concerto/`
-        const concertoNpmGlobalRootDir = `${spawnShellCommand('npm root -g', { stdio: 'pipe', shell: true }).stdout.toString().trim()}/concerto/`
+        const concertoNpmProjectRootDir = `${process.cwd()}/node_modules/@yrstruely/concerto/`
+        const concertoNpmGlobalRootDir = `${spawnShellCommand('npm root -g', { stdio: 'pipe', shell: true }).stdout.toString().trim()}/@yrstruely/concerto/`
 
         if (fs.existsSync(concertoNpmGlobalRootDir)) {
             concertoNpmRootDir = concertoNpmGlobalRootDir
         } else if (fs.existsSync(concertoNpmProjectRootDir)) {
             concertoNpmRootDir = concertoNpmProjectRootDir
-            console.warn('Warning: to get the best from concerto, it should be installed globally e.g. > npm install -g concerto')
+            console.warn('Warning: to get the best from concerto, it should be installed globally e.g. > npm install -g @yrstruely/concerto')
         } else {
-            throw new Error('Error: concerto npm package not found! Please install with > npm install -g concerto')
+            throw new Error('Error: concerto npm package not found! Please install with > npm install -g @yrstruely/concerto')
         }
 
         const globsToCopy = [
