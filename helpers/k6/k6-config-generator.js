@@ -1,2 +1,2 @@
-import { CreateK6Config } from 'concerto'
+import { CreateK6Config } from '@yrstruely/concerto'
 CreateK6Config()

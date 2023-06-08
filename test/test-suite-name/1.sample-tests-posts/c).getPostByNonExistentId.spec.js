@@ -1,5 +1,5 @@
 
-import { AxiosClient } from 'concerto'
+import { AxiosClient } from '@yrstruely/concerto'
 import * as SampleClient from '../../../client-configs/sample-client-config.js'
 import dotenv from 'dotenv'
 dotenv.config()
