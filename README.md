@@ -1,28 +1,28 @@
 [![Build Status](https://github.com/tj/commander.js/workflows/build/badge.svg)](https://github.com/yrstruely/concerto/actions?query=workflow%3A%22Node.js+CI%22)
 
 # Concerto
-API functional and performance testing living together in perfect hamony!
+API functional and performance testing living together in perfect harmony!
 
-Mainly utilizing: mocha, Axios and k6 libraries. Reporting handled by: mochawesome and k6 Cloud.
+Mainly utilizing mocha, Axios and k6 libraries. Reporting handled by: mochawesome and k6 Cloud.
 
 This project is also designed to be built and run in a docker container so that it can easily be integrated into an existing CI/CD build pipeline.
 # Dependencies
  - Install [Node and Npm](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm) --- *presumably you have these already!*
- - Install [Docker](https://www.docker.com/products) --- *building and running tests in docker containers*
- - Install [k6.io](https://k6.io/docs/get-started/installation/) --- *required for running performance tests*
- - Install [xk6-dotenv](https://github.com/szkiba/xk6-dotenv) --- *allows tests to be run in multiple environments i.e. dev, test, production*
+ - Install [Docker](https://www.docker.com/products) --- *building and running tests in docker containers.*
+ - Install [k6.io](https://k6.io/docs/get-started/installation/) --- *required for running performance tests.*
+ - Install [xk6-dotenv](https://github.com/szkiba/xk6-dotenv) --- *allows tests to be run in multiple environments i.e. dev, test, production.*
  - **Note:** Building `k6` extensions, like `xk6-dotenv` requires additional dependencies: [Go toolchain](https://go101.org/article/go-toolchain.html), [Git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git) and [xk6](https://github.com/grafana/xk6).
    - Alternatively, it is possible to build `xk6-dotenv` using the docker image for `xk6`. This means that you do not need to install the `xk6` dependencies locally. This will build a new `k6` executable locally, which you will need to move to the `k6` path location i.e. `which k6`. To do this use this command: 
         ```sh
         sudo docker run --rm -it -u "$(id -u):$(id -g)" -v "${PWD}:/xk6" grafana/xk6 build v0.44.1 --with github.com/szkiba/xk6-dotenv@latest
         ```
- - **Also note:** these dependencies are already available in the docker image supplied with concerto. Therefore, another option is to run the tests in a local docker container, see: [Building and Running with docker-compose](#BuildingandRunningwithdocker-compose)
+ - **Also note:** these dependencies are already available in the docker image supplied with concerto. Therefore, another option is to run the tests in a local docker container, see: [Building and running with docker-compose](#Building-and-running-with-docker-compose)
 # Installation
-- Install the concerto npm package globally
+- Install the concerto npm package globally.
   ```sh
   npm install -g @yrstruely/concerto
   ```
-- Create a directory for your API testing project `<project-dir>` and `cd` into it
+- Create a directory for your API testing project `<project-dir>` and `cd` into it.
   ```sh
   mkdir <project-dir>
   cd <project-dir>
@@ -36,19 +36,19 @@ This project is also designed to be built and run in a docker container so that 
     ```sh 
     xk6 build --with github.com/szkiba/xk6-dotenv@latest
     ```  
-  - For a local installation
+  - For a local installation,
   - or:
     ```sh
     sudo docker run --rm -it -u "$(id -u):$(id -g)" -v "${PWD}:/xk6" grafana/xk6 build v0.44.1 --with github.com/szkiba/xk6-dotenv@latest
     ``` 
-  - For installing `k6` + `xk6-dotenv` via docker
+  - For installing `k6` + `xk6-dotenv` via docker.
 - Finally:
   ```sh
   concerto test
   concerto results
   ```
-- Congratulations! You have just run concerto's pre-installed sample tests and been shown the test results
-# Building and Running with docker-compose
+- Congratulations! You have just run concerto's pre-installed sample tests and been shown the test results.
+# Building and running with docker-compose
  - From your project directory run: 
     ```sh
     docker-compose -f docker-compose.yml up --build
@@ -84,7 +84,7 @@ You can have any sub-folders you like under `<project-dir>/test` so that you can
 ## Performance Tests
 There are two files in the `<project-dir>/client-configs` folder for writing your performance tests: `k6-imports-template.js` and `k6-exports-template.js`. 
 
-The k6 tests are seperated into two files like this is so that the performance tests can be auto-generated from your existing functional tests. This has the benefit of keeping your functional and performance tests automatically in sync with each other. 
+The k6 tests are separated into two files like this is so that the performance tests can be auto-generated from your existing functional tests. This has the benefit of keeping your functional and performance tests automatically in sync with each other. 
 
 Most of the time, you will not need to change the `k6-imports-template.js` file (unless you want to add extra libraries to k6).
 
@@ -92,7 +92,7 @@ As concerto auto-generates performance test configuration methods, all you need 
 ### Steps:
 1. In the `k6-exports-template.js` file create API method config variables from your existing API methods in your `./client-configs/sample-client-config.js` file --- *just assume they already exist!*
 2. For example: ```const getPostsConfig = getPosts()``` --- *where `getPosts()` is an existing method from `./client-configs/sample-client-config.js`*
-3. Set up your k6 requests using the the method config variables you just created
+3. Set up your k6 requests using the the method config variables you just created.
     ```js
       // getPosts() is auto-generated from ./client-configs/sample-client-config.js
       const getPostsConfig = getPosts() 
@@ -107,14 +107,14 @@ As concerto auto-generates performance test configuration methods, all you need 
         },
       }
       ```
-4. Add k6 checks for the pass/fail criteria of your requests
+4. Add k6 checks for the pass/fail criteria of your requests.
     ```js
       check(
         responses['GET posts'], {
         'status is 200': (res) => res.status === 200
       })
       ```
-5. Set up k6 options to configure how k6 will conduct the performance testing
+5. Set up k6 options to configure how k6 will conduct the performance testing.
     ```js
       export const options = {
       stages: [
@@ -129,7 +129,7 @@ As concerto auto-generates performance test configuration methods, all you need 
       },
     };
     ```
-6. And you are done! concerto will handle adding the missing API methods based your your functional tests. You can now run the performance tests and view the results.
+6. And you are done! concerto will handle adding the missing API methods based on your functional tests. You can now run the performance tests and view the results.
 
     **Note:** Further documentation on how to create k6 performance tests can be found at [k6 Docs](https://k6.io/docs/)
 # Running your tests
@@ -148,4 +148,4 @@ There are various methods available for running your tests:
   ```sh
   concerto results performance
   ```
-- Performance test results are also added to k6 Cloud and can be viewed from https://app.k6.io/runs/<testRunId> (you will need a k6 cloud login for this)
+- Performance test results are also added to k6 Cloud and can be viewed from `https://app.k6.io/runs/<testRunId>` (you will need a k6 cloud login for this)
