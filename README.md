@@ -32,16 +32,35 @@ This project is also designed to be built and run in a docker container so that 
   concerto init
   npm install
   ```
-  - Then either:
+  - Then either *(not recommended):*
     ```sh 
     xk6 build --with github.com/szkiba/xk6-dotenv@latest
     ```  
   - For a local installation,
-  - or:
-    ```sh
-    sudo docker run --rm -it -u "$(id -u):$(id -g)" -v "${PWD}:/xk6" grafana/xk6 build v0.44.1 --with github.com/szkiba/xk6-dotenv@latest
-    ``` 
+  - or run one of the following commands depending on your OS *(recommended):*
+    - Linux:
+      ```sh
+      sudo docker run --rm -it -u "$(id -u):$(id -g)" -v "${PWD}:/xk6" \
+      grafana/xk6 build v0.44.1 \ 
+      --with github.com/szkiba/xk6-dotenv@latest \
+      --with github.com/szkiba/xk6-faker@latest
+      ``` 
+    - MacOS:
+      ```
+      docker run --rm -e GOOS=darwin -u "$(id -u):$(id -g)" -v "${PWD}:/xk6" \
+      grafana/xk6 build v0.44.1 \
+      --with github.com/szkiba/xk6-dotenv@latest \
+      --with github.com/szkiba/xk6-faker@latest
+      ```
+    - Windows (PowerShell):
+      ```
+      docker run --rm -e GOOS=windows -u "$(id -u):$(id -g)" -v "${PWD}:/xk6" `
+      grafana/xk6 build v0.44.1 --output k6.exe `
+      --with github.com/szkiba/xk6-dotenv@latest `
+      --with github.com/szkiba/xk6-faker@latest
+      ```
   - For installing `k6` + `xk6-dotenv` via docker.
+  - **Note:** you will need to replace the system `k6` executable with the newly created `k6` executable by over writing the system `k6` in it's path location i.e. `which k6`.
 - Finally:
   ```sh
   concerto test
