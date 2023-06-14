@@ -34,6 +34,7 @@ program
 
         const globsToCopy = [
             { pattern: 'client-configs/**/*.js', options: { cwd: `${concertoNpmRootDir}`, nodir: true, dot: true, ignore: 'client-configs/*client.js' } },
+            { pattern: 'helpers/k6/k6-config-generator.js', options: { cwd: `${concertoNpmRootDir}`, nodir: true, dot: true } },
             { pattern: 'helpers/k6/k6-html-reporter.js', options: { cwd: `${concertoNpmRootDir}`, nodir: true, dot: true } },
             { pattern: 'results/**/*', options: { cwd: `${concertoNpmRootDir}`, nodir: true, dot: true } },
             { pattern: 'schemas/**/*', options: { cwd: `${concertoNpmRootDir}`, nodir: true, dot: true } },
