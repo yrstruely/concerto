@@ -11,7 +11,7 @@ services:
   volumes:
    - ./:/concerto
    - test_data:/results
-  command: /bin/sh -c "npm-update ; npm run test ; npm run generate-k6-config ; npm run perf-test ; npm run generate-k6-html-report"
+  command: /bin/sh -c "npm run test ; npm run generate-k6-config ; k6 run ./client-configs/k6-config.js ; npm run generate-k6-html-report"
   #command: npm run test
   #command: npm run perf-test
   #command: npm run debug
