@@ -54,7 +54,7 @@ This project is also designed to be built and run in a docker container so that 
       ```
     - Windows (PowerShell):
       ```
-      docker run --rm -e GOOS=windows -u "$(id -u):$(id -g)" -v "${PWD}:/xk6" `
+      docker run --rm -e GOOS=windows -v "${PWD}:/xk6" `
       grafana/xk6 build v0.44.1 --output k6.exe `
       --with github.com/szkiba/xk6-dotenv@latest `
       --with github.com/szkiba/xk6-faker@latest
