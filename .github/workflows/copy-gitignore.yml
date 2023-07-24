@@ -17,3 +17,9 @@ jobs:
 
       - name: Copy file 
         run: cp .gitignore gitignore
+
+      - name: commit
+        run: 
+            git add gitignore
+            git commit -m "added gitignore file"
+            git push origin master
