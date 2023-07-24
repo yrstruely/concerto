@@ -19,7 +19,7 @@ jobs:
         run: cp .gitignore gitignore
 
       - name: commit
-        run: 
+        run: |
             git add gitignore
             git commit -m "added gitignore file"
             git push origin master
