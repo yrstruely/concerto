@@ -1,15 +1,13 @@
 
 name: Copy .gitignore to gitignore
 
-on:
+on: 
   push:
-    branches: [ "master" ]
-  pull_request:
-    branches: [ "master" ]
+    branches: [ "develop" ]
 
 jobs:
   build:
-
+    
     runs-on: ubuntu-latest
 
     steps:
@@ -17,3 +15,11 @@ jobs:
 
       - name: Copy file 
         run: cp .gitignore gitignore
+
+      - name: commit
+        run: |
+          git config --local user.email "anamika.bassi@fonterra.com"
+          git config --local user.name "ZEUS\bassiana"
+          git add gitignore
+          git diff --quiet && git diff --staged --quiet || git commit -m "Added gitignore file"
+          git push
