@@ -61,6 +61,10 @@ program
                 });
             });
         })
+
+        if (fs.existsSync(`./gitignore`)) {
+            fs.renameSync(`./.gitignore`, `./gitignore`)
+        }
     })
 
 program
