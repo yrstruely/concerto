@@ -1,7 +1,9 @@
 
 name: Copy .gitignore to gitignore
 
-on: push
+on: 
+  push:
+    branches: [ "develop" ]
 
 jobs:
   build:
@@ -18,6 +20,7 @@ jobs:
         run: |
           git config --local user.email "anamika.bassi@fonterra.com"
           git config --local user.name "ZEUS\bassiana"
+          git status
           git add gitignore
           git commit -m "added gitignore file"
           git push
