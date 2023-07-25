@@ -20,7 +20,6 @@ jobs:
         run: |
           git config --local user.email "anamika.bassi@fonterra.com"
           git config --local user.name "ZEUS\bassiana"
-          git status
           git add gitignore
-          git commit -m "added gitignore file"
+          git diff --quiet && git diff --staged --quiet || git commit -m "Added gitignore file"
           git push
