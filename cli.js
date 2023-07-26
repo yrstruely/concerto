@@ -33,6 +33,7 @@ program
         }
 
         const globsToCopy = [
+            { pattern: '.vscode/**/*.json', options: { cwd: `${concertoNpmRootDir}`, nodir: true, dot: true } },
             { pattern: 'client-configs/**/*.js', options: { cwd: `${concertoNpmRootDir}`, nodir: true, dot: true, ignore: 'client-configs/*client.js' } },
             { pattern: 'helpers/k6/k6-config-generator.js', options: { cwd: `${concertoNpmRootDir}`, nodir: true, dot: true } },
             { pattern: 'helpers/k6/k6-html-reporter.js', options: { cwd: `${concertoNpmRootDir}`, nodir: true, dot: true } },
@@ -62,8 +63,8 @@ program
             });
         })
 
-        if (fs.existsSync(`./gitignore`)) {
-            fs.renameSync(`./.gitignore`, `./gitignore`)
+        if (fs.existsSync(`${process.cwd()}/gitignore`)) {
+            fs.renameSync(`${process.cwd()}/.gitignore`, `${process.cwd()}/gitignore`)
         }
     })
 
