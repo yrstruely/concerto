@@ -54,7 +54,7 @@ program
                     const fileAsArray = file.replace('./', '').split('/')
                     const targetPath = `${process.cwd().replace(/\\/g, '/')}/${fileAsArray.slice(0, fileAsArray.length - 1).join('/')}/${fileAsArray[fileAsArray.length - 1]}`
 
-                    fs.copy(sourceFilePath, targetPath, { overwrite: true }, err => {
+                    fs.copySync(sourceFilePath, targetPath, { overwrite: true }, err => {
                         if (err) {
                             console.error(err);
                         }
@@ -63,8 +63,8 @@ program
             });
         })
 
-        if (fs.existsSync(`${process.cwd()}/gitignore`)) {
-            fs.renameSync(`${process.cwd()}/gitignore`, `${process.cwd()}/.gitignore`)
+        if (fs.existsSync(`${process.cwd().replace(/\\/g, '/')}/gitignore`)) {
+            fs.renameSync(`${process.cwd().replace(/\\/g, '/')}/gitignore`, `${process.cwd().replace(/\\/g, '/')}/.gitignore`)
         }
     })
 
