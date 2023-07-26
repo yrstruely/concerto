@@ -64,7 +64,7 @@ program
         })
 
         if (fs.existsSync(`${process.cwd()}/gitignore`)) {
-            fs.renameSync(`${process.cwd()}/.gitignore`, `${process.cwd()}/gitignore`)
+            fs.renameSync(`${process.cwd()}/gitignore`, `${process.cwd()}/.gitignore`)
         }
     })
 
