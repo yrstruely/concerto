@@ -43,26 +43,6 @@ program
             { pattern: './*', options: { cwd: `${concertoNpmRootDir}`, nodir: true, dot: true, ignore: ['./*.js', './build.sh'] } }
         ]
 
-        /* globsToCopy.forEach(glob => {
-            globSync(glob.pattern, glob.options, (err, files) => {
-                if (err) {
-                    console.error(err);
-                    return;
-                }
-                files.forEach(file => {
-                    const sourceFilePath = `${concertoNpmRootDir.replace(/\\/g, '/')}${file.replace(/\\/g, '/').replace('./', '')}`
-                    const fileAsArray = file.replace('./', '').split('/')
-                    const targetPath = `${process.cwd().replace(/\\/g, '/')}/${fileAsArray.slice(0, fileAsArray.length - 1).join('/')}/${fileAsArray[fileAsArray.length - 1]}`
-
-                    fs.copySync(sourceFilePath, targetPath, { overwrite: true }, err => {
-                        if (err) {
-                            console.error(err);
-                        }
-                    });
-                });
-            });
-        }) */
-
         for (let glob of globsToCopy) {
             globSync(glob.pattern, glob.options, (err, files) => {
                 if (err) {
@@ -75,16 +55,15 @@ program
 
                     let currentFile = sourceFilePath.split('/')[sourceFilePath.split('/').length - 1]
                     console.log(`copying ${currentFile}`)
-                    
+
                     fs.copySync(sourceFilePath, targetPath, { overwrite: true })
+
+                    if (currentFile === 'gitignore' && fs.existsSync(`${process.cwd().replace(/\\/g, '/')}/gitignore`)) {
+                        console.log('Renaming gitignore to .gitignore')
+                        fs.renameSync(`${process.cwd().replace(/\\/g, '/')}/gitignore`, `${process.cwd().replace(/\\/g, '/')}/.gitignore`)
+                    }
                 }
             })
-        }
-        console.log('Finished copying files')
-
-        if (fs.existsSync(`${process.cwd().replace(/\\/g, '/')}/gitignore`)) {
-            console.log('Renaming gitignore to .gitignore')
-            fs.renameSync(`${process.cwd().replace(/\\/g, '/')}/gitignore`, `${process.cwd().replace(/\\/g, '/')}/.gitignore`)
         }
     })
 
