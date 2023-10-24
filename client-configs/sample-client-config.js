@@ -62,10 +62,14 @@ export function getCommentsOnPostByPostId(postId) {
 }
 
 
-export function getCommentsOnPostByPostIdParam(params) {
+export function getCommentsOnPostByPostIdParam(params = undefined) {
     const method = 'GET'
     let endpoint = 'comments'
-    const uri = `${process.env.JSON_PLACEHOLDER_BASE_URL}${process.env.JSON_PLACEHOLDER_URL_PATH}${endpoint}`
+    let uri = `${process.env.JSON_PLACEHOLDER_BASE_URL}${process.env.JSON_PLACEHOLDER_URL_PATH}${endpoint}`
+
+    if (params) {
+        uri = `${uri}?${new URLSearchParams(params).toString()}`
+    }
 
     jsonPlaceholderHeaders['X-Correlation-ID'] = uuidv4()
 
@@ -73,7 +77,6 @@ export function getCommentsOnPostByPostIdParam(params) {
         method: method,
         url: uri,
         headers: jsonPlaceholderHeaders,
-        params: params
     }
 
     return config
