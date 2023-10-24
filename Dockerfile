@@ -30,7 +30,7 @@ COPY . .
 
 # Commented out the CMD command below as this needs to be executed 
 # later when running the tests
-#CMD [ "/bin/sh", "-c", "npm run test ; npm run perf-test ; npm run generate-k6-html-report" ]
+#CMD [ "/bin/sh", "-c", "npm run test ; npm run generate-k6-config ; npm run perf-test ; npm run generate-k6-html-report" ]
 
 # PowerShell > docker build -t concerto .
 # Linux      > sudo docker build -t concerto .
