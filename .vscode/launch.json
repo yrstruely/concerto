@@ -27,6 +27,7 @@
                 "--sort=true",
                 "--recursive",
                 "--ignore=**/*.perf.js",
+                "--ignore=**/*.ignore.js",
                 "--require",
                 "mochawesome/register",
                 "--reporter",

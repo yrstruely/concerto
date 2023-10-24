@@ -24,6 +24,9 @@ temp/
 #mochawesome
 mochawesome-report/
 
+#k6-client (as it is auto-generated)
+client-configs/k6-client.js
+
 #results
 results/*.png
 results/integration/*
