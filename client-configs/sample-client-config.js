@@ -68,7 +68,7 @@ export function getCommentsOnPostByPostIdParam(params = undefined) {
     let uri = `${process.env.JSON_PLACEHOLDER_BASE_URL}${process.env.JSON_PLACEHOLDER_URL_PATH}${endpoint}`
 
     if (params) {
-        uri = `${uri}?${new URLSearchParams(params).toString()}`
+        uri = `${uri}?${encodeURI(new URLSearchParams(params).toString())}`
     }
 
     jsonPlaceholderHeaders['X-Correlation-ID'] = uuidv4()
