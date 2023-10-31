@@ -1,6 +1,6 @@
 {
   "name": "@yrstruely/concerto",
-  "version": "2.0.33",
+  "version": "2.0.34",
   "description": "Server-side functional and performance test framework",
   "main": "index.js",
   "type": "module",
