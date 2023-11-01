@@ -11,5 +11,5 @@ export function generateAuthHeader(secretKey, payload) {
 }
 
 export function formattedStringify(jsonObject) {
-    return JSON.stringify(jsonObject, null, 4).replaceAll('\n', '\r\n')
+    return JSON.stringify(jsonObject, null, 4).split('\n').join('\r\n')
 }
