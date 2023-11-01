@@ -248,7 +248,7 @@ export class AnypointMqStatsClientClass {
       method: method,
       url: uri,
       headers: this.mqHeaders,
-      params: URLSearchParams({'destinationIds': mq})
+      params: new URLSearchParams({'destinationIds': mq})
     }
   }
 
