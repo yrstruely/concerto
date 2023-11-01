@@ -9,7 +9,7 @@ import * as classInstanceToObject from './helpers/classInstanceToObject.js'
 import { createK6Config } from './helpers/k6/createK6Config.js'
 import * as date from './helpers/date.js'
 import { generatePdf } from './helpers/generatePdf.js'
-import { generateAuthHeader } from './helpers/hmacsha256.js'
+import { generateAuthHeader, formattedStringify } from './helpers/hmacsha256.js'
 import puppeteer from 'puppeteer'
 import { randomBase64Buffer } from './helpers/random-base64-buffer.js'
 
@@ -24,5 +24,6 @@ export const CreateK6Config = createK6Config
 export const DateHelper = date
 export const GeneratePdf = generatePdf
 export const GenerateAuthHeader = generateAuthHeader
+export const FormattedStringify = formattedStringify
 export const Puppeteer = puppeteer
 export const RandomBase64Buffer = randomBase64Buffer
