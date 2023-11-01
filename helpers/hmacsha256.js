@@ -1,4 +1,4 @@
-const crypto = require('crypto')
+import * as crypto from "crypto";
 
 export function generateAuthHeader(secretKey, payload) {
 
