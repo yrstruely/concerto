@@ -8,6 +8,11 @@ const createPostParams = {
   completed: false
 }
 const createPostConfig = createPost(createPostParams)
+// Note:
+// Use the below if you want to create multiple tests calling the same function
+// (createPost()) with different parameters
+// e.g.
+// const createPostConfig = JSON.parse(JSON.stringify(createPost(createPostParams)))
 
 export const requests = new Counter('http_reqs');
 
