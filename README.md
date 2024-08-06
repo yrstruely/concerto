@@ -18,7 +18,7 @@ This project is also designed to be built and run in a docker container so that 
         ```sh
         sudo docker run --rm -it -u "$(id -u):$(id -g)" -v "${PWD}:/xk6" \
         grafana/xk6 build v0.44.1 \ 
-        --with github.com/szkiba/xk6-dotenv@0.1.3 \
+        --with github.com/szkiba/xk6-dotenv@v0.1.3 \
         --with github.com/szkiba/xk6-faker@latest
         ```
  - **Also note:** these dependencies are already available in the docker image supplied with concerto. Therefore, another option is to run the tests in a local docker container, see: [Building and running with docker-compose](#Building-and-running-with-docker-compose)
@@ -39,7 +39,7 @@ This project is also designed to be built and run in a docker container so that 
   ```
   - Then either *(not recommended):*
     ```sh 
-    xk6 build --with github.com/szkiba/xk6-dotenv@0.1.3
+    xk6 build --with github.com/szkiba/xk6-dotenv@v0.1.3
     ```  
   - For a local installation,
   - Or *(recommended)*
@@ -48,21 +48,21 @@ This project is also designed to be built and run in a docker container so that 
       ```sh
       sudo docker run --rm -it -u "$(id -u):$(id -g)" -v "${PWD}:/xk6" \
       grafana/xk6 build v0.44.1 \ 
-      --with github.com/szkiba/xk6-dotenv@0.1.3 \
+      --with github.com/szkiba/xk6-dotenv@v0.1.3 \
       --with github.com/szkiba/xk6-faker@latest
       ``` 
     - MacOS:
       ```
       docker run --rm -e GOOS=darwin -u "$(id -u):$(id -g)" -v "${PWD}:/xk6" \
       grafana/xk6 build v0.44.1 \
-      --with github.com/szkiba/xk6-dotenv@0.1.3 \
+      --with github.com/szkiba/xk6-dotenv@v0.1.3 \
       --with github.com/szkiba/xk6-faker@latest
       ```
     - Windows (PowerShell):
       ```
       docker run --rm -e GOOS=windows -v "${PWD}:/xk6" `
       grafana/xk6 build v0.44.1 --output k6.exe `
-      --with github.com/szkiba/xk6-dotenv@0.1.3 `
+      --with github.com/szkiba/xk6-dotenv@v0.1.3 `
       --with github.com/szkiba/xk6-faker@latest
       ```
   - To install `k6` + `xk6-dotenv` via docker.
