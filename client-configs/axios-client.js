@@ -30,6 +30,7 @@ class AxiosClientClass {
     setRejectUnauthorizedCerts(rejectUnauthorizedCerts = true) {
         // Set this to false to disable CA checks
         httpCookieAgent.options.rejectUnauthorized = rejectUnauthorizedCerts
+        httpsCookieAgent.options.rejectUnauthorized = rejectUnauthorizedCerts
     }
 
     async sendRequest(config, state = {}, polling = false, rejectUnauthorizedCerts = true) {
