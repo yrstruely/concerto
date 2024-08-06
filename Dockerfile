@@ -9,7 +9,7 @@ ADD . .
 RUN apk --no-cache add git
 RUN go mod init
 RUN go install go.k6.io/xk6/cmd/xk6@latest
-RUN xk6 build --with github.com/szkiba/xk6-dotenv@latest
+RUN xk6 build --with github.com/szkiba/xk6-dotenv@v0.1.3
 RUN cp k6 $GOPATH/bin/k6
 
 # Additional settings for xk6
