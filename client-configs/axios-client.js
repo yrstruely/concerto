@@ -2,14 +2,14 @@ import axios from 'axios'
 import { HttpCookieAgent, HttpsCookieAgent } from 'http-cookie-agent'
 import { CookieJar } from 'tough-cookie'
 const jar = new CookieJar()
-axios.defaults.httpAgent = new HttpCookieAgent({
-    jar,
-    //rejectUnauthorized: false, // disable CA checks
+let httpCookieAgent = new HttpCookieAgent({
+    jar
 })
-axios.defaults.httpsAgent = new HttpsCookieAgent({
-    jar,
-    //rejectUnauthorized: false, // disable CA checks
+axios.defaults.httpAgent = httpCookieAgent
+let httpsCookieAgent = new HttpsCookieAgent({
+    jar
 })
+axios.defaults.httpsAgent = httpsCookieAgent
 import util from 'util'
 import { serialize, deserialize } from '../helpers/persistent.js'
 
@@ -27,7 +27,12 @@ class AxiosClientClass {
     }
     result = null
 
-    async sendRequest(config, state = {}, polling = false) {
+    setRejectUnauthorizedCerts(rejectUnauthorizedCerts = true) {
+        // Set this to false to disable CA checks
+        httpCookieAgent.options.rejectUnauthorized = rejectUnauthorizedCerts
+    }
+
+    async sendRequest(config, state = {}, polling = false, rejectUnauthorizedCerts = true) {
 
         this.setState(state)
         config.headers.cookie = jar.getCookieStringSync(config.url)
