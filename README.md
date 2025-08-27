@@ -1,5 +1,6 @@
 [![Build Status](https://github.com/tj/commander.js/workflows/build/badge.svg)](https://github.com/yrstruely/concerto/actions?query=workflow%3A%22Node.js+CI%22)
 [![](https://img.shields.io/static/v1?label=Sponsor&message=%E2%9D%A4&logo=GitHub&color=%23fe8e86)](https://github.com/sponsors/yrstruely)
+[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/yrstruely/concerto)
 
 # Concerto
 API functional and performance testing living together in perfect harmony!
